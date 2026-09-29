@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tidsplan — Odsgard A/S</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f4f4f0; color: #1a1a1a; font-size: 14px; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 80px; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 18px; border-bottom: 3px solid #1a3a5c; margin-bottom: 20px;
+  }
+  .topbar .title { font-size: 22px; font-weight: bold; color: #1a3a5c; }
+  .topbar .sub { font-size: 12px; color: #777; margin-top: 2px; }
+  .topbar .actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    background: #1a3a5c; color: #fff; border: none; padding: 9px 16px;
+    border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer;
+  }
+  .btn:hover { background: #234a72; }
+  .btn.secondary { background: #fff; color: #1a3a5c; border: 1px solid #1a3a5c; }
+  .btn.secondary:hover { background: #f0f4f9; }
+  .btn.danger { background: #b3261e; }
+  .btn.danger:hover { background: #8f1e18; }
+  .btn.small { padding: 5px 10px; font-size: 11px; }
+
+  .tabs {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  }
+  .tab-btn {
+    background: #fff; border: 1px solid #ddd; color: #444; padding: 9px 14px;
+    border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;
+  }
+  .tab-btn.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .card { background: #fff; border-radius: 10px; padding: 20px 22px; margin-bottom: 18px; box-shadow: 0 1px 8px rgba(0,0,0,0.05); }
+  .card h2 { font-size: 15px; color: #1a3a5c; margin-bottom: 14px; }
+  .card h3 { font-size: 13px; color: #1a3a5c; margin-bottom: 10px; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .summary-box { background: #fff; border-radius: 10px; padding: 16px 18px; box-shadow: 0 1px 8px rgba(0,0,0,0.05); }
+  .summary-box .sv { font-size: 22px; font-weight: bold; color: #1a3a5c; }
+  .summary-box .sl { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #888; padding: 8px 10px; border-bottom: 2px solid #eee; }
+  td { padding: 9px 10px; border-bottom: 1px solid #f0f0ec; vertical-align: middle; }
+  tr.overdue td { background: #fdeceb; }
+  tr.soon td { background: #fff8e6; }
+  tr:hover td { background: #f7f9fb; }
+  tr.overdue:hover td { background: #fbe0de; }
+  tr.soon:hover td { background: #fff2cf; }
+
+  .pill { display: inline-block; font-size: 10px; font-weight: bold; padding: 2px 9px; border-radius: 20px; }
+  .pill.ov { background: #f8d7d5; color: #96201a; }
+  .pill.so { background: #fbe8b8; color: #6b5000; }
+  .pill.ok { background: #dbe9d4; color: #2e5c1a; }
+  .pill.done { background: #e4e4e0; color: #777; }
+  .media-chip { display: inline-block; font-size: 10px; font-weight: bold; background: #e8f0f8; color: #1a3a5c; padding: 2px 9px; border-radius: 20px; }
+
+  .empty { text-align: center; color: #999; padding: 30px 10px; font-size: 13px; }
+
+  .pub-block { border: 1px solid #e6e6e0; border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
+  .pub-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .pub-title { font-size: 15px; font-weight: bold; color: #1a1a1a; }
+  .pub-meta { font-size: 11px; color: #888; margin-top: 3px; }
+  .pub-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
+  .pn { background: #f8f8f6; border-radius: 6px; padding: 8px 10px; border: 1px solid #eee; }
+  .pn-val { font-size: 14px; font-weight: bold; color: #1a3a5c; }
+  .pn-lab { font-size: 10px; color: #888; margin-top: 2px; }
+
+  .task-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f4f4f0; font-size: 12px; }
+  .task-row:last-child { border-bottom: none; }
+  .task-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+  .task-row .tn { flex: 1; }
+  .task-row .tn.done-text { text-decoration: line-through; color: #aaa; }
+  .task-row .td-date { color: #888; font-size: 11px; width: 100px; }
+
+  .mail-box { background: #f0f4f9; border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
+  .mail-box .mb-title { font-size: 11px; font-weight: bold; color: #1a3a5c; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .mail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 11px; }
+  .mail-stats div { background: #fff; border-radius: 5px; padding: 6px 8px; border: 1px solid #dde3ea; }
+  .mail-stats .mv { font-size: 14px; font-weight: bold; color: #1a3a5c; }
+
+  .row-actions { display: flex; gap: 6px; }
+
+  /* modal */
+  .modal-overlay {
+    position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: flex-start; justify-content: center; z-index: 1000; overflow-y: auto; padding: 40px 16px;
+  }
+  .modal-box {
+    background: #fff; border-radius: 10px; padding: 26px 28px; max-width: 640px; width: 100%;
+  }
+  .modal-box h3 { color: #1a3a5c; font-size: 16px; margin-bottom: 16px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 11px; font-weight: bold; color: #555; }
+  .form-field input, .form-field textarea, .form-field select {
+    padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; font-family: inherit;
+  }
+  .form-field textarea { resize: vertical; min-height: 50px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  .divider { border-top: 1px solid #eee; margin: 18px 0; }
+
+  .tpl-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: center; padding: 6px 0; }
+  .tpl-row input { padding: 6px 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; }
+
+  .notif-banner {
+    background: #fffbf0; border: 1px solid #f0d080; border-radius: 7px; padding: 12px 16px;
+    font-size: 12px; color: #6b5000; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  select#mediaSelectAdmin { padding: 7px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 12px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>
+      <div class="title">Tidsplan — Odsgard A/S</div>
+      <div class="sub">Deadlines, opgaver, temaer, omsætning &amp; budget pr. medie</div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary small" onclick="exportData()">Eksportér JSON</button>
+      <button class="btn secondary small" onclick="document.getElementById('importFile').click()">Importér JSON</button>
+      <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importData(event)">
+    </div>
+  </div>
+
+  <div id="notifBanner"></div>
+
+  <div class="tabs" id="tabsRow"></div>
+
+  <!-- OVERSIGT -->
+  <div class="view" id="view-oversigt">
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="card">
+      <h2>Opgaver — forfaldne og kommende (30 dage)</h2>
+      <table>
+        <thead><tr><th>Status</th><th>Opgave</th><th>Medie</th><th>Udgivelse</th><th>Forfalder</th><th></th></tr></thead>
+        <tbody id="overviewTaskBody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Omsætning &amp; budget pr. medie (alle udgivelser)</h2>
+      <table>
+        <thead><tr><th>Medie</th><th>Udgivelser</th><th>Omsætning i alt</th><th>Budget i alt</th><th>Diff.</th></tr></thead>
+        <tbody id="revenueBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MEDIA VIEWS: injected dynamically -->
+  <div id="mediaViews"></div>
+
+  <!-- ADMIN -->
+  <div class="view" id="view-admin">
+    <div class="card">
+      <h2>Admin — opgaveskabeloner pr. medie</h2>
+      <p style="font-size:12px;color:#777;margin-bottom:10px">
+        Sæt hvor mange dage før deadline hver opgavetype skal udføres. Negative tal = dage EFTER deadline (fx "tjek stat" der først kan laves bagefter).
+        Ændringer her påvirker kun nye udgivelser — brug "Genskab opgaver" på en udgivelse for at opdatere den.
+      </p>
+      <select id="mediaSelectAdmin" onchange="renderAdminTemplates()"></select>
+      <div id="tplList"></div>
+      <button class="btn secondary small" onclick="addTemplateRow()">+ Tilføj opgavetype</button>
+      <div class="modal-actions" style="justify-content:flex-start">
+        <button class="btn small" onclick="saveTemplates()">Gem skabeloner for dette medie</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Browser-påmindelser</h2>
+      <p style="font-size:12px;color:#777;margin-bottom:10px">
+        Når aktiveret, viser browseren en notifikation for opgaver der forfalder i dag eller er overskredet — men kun mens denne fane er åben i browseren.
+        Tjekkes ved åbning og derefter hver time.
+      </p>
+      <button class="btn small" id="notifBtn" onclick="requestNotifPermission()">Aktivér browser-påmindelser</button>
+    </div>
+    <div class="card">
+      <h2>Nulstil</h2>
+      <button class="btn danger small" onclick="resetAll()">Ryd al data (kan ikke fortrydes)</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+/* ===================== DATA MODEL ===================== */
+const STORAGE_KEY = 'odsgard_tidsplan_v1';
+
+const DEFAULT_TEMPLATES = [
+  { id: 't1', name: 'Levér adresseliste', offsetDays: 14 },
+  { id: 't2', name: 'Lav mailbrev', offsetDays: 10 },
+  { id: 't3', name: 'Send mail til annoncører', offsetDays: 7 },
+  { id: 't4', name: 'Send rykker', offsetDays: 2 },
+  { id: 't5', name: 'Tjek stat på mail', offsetDays: -1 },
+  { id: 't6', name: 'Tjek stat på rykker', offsetDays: -4 }
+];
+
+const MEDIA_DEFS = [
+  { key: 'bygtek', name: 'BygTek', unitLabel: 'Udgivelse' },
+  { key: 'mester_svend', name: 'Mester & Svend', unitLabel: 'Udgivelse' },
+  { key: 'bygtekdk', name: 'BygTek.dk', unitLabel: 'Måned' },
+  { key: 'nyhedsbrev', name: 'Nyhedsbrev', unitLabel: 'Måned' },
+  { key: 'bygtek_mobil', name: 'BygTek Mobil', unitLabel: 'Udgivelse' },
+  { key: 'custom_newsletter', name: 'Custom Newsletter', unitLabel: 'Udsendelse' },
+  { key: 'virksomhedsprofil', name: 'Virksomhedsprofil', unitLabel: 'Udgivelse' }
+];
+
+function defaultData() {
+  const mediaTypes = {};
+  MEDIA_DEFS.forEach(m => {
+    mediaTypes[m.key] = {
+      name: m.name,
+      unitLabel: m.unitLabel,
+      taskTemplates: JSON.parse(JSON.stringify(DEFAULT_TEMPLATES))
+    };
+  });
+  return { mediaTypes, publications: [], notifEnabled: false };
+}
+
+let DATA = load();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultData();
+    const parsed = JSON.parse(raw);
+    // merge in any new media types added since last save
+    MEDIA_DEFS.forEach(m => {
+      if (!parsed.mediaTypes[m.key]) {
+        parsed.mediaTypes[m.key] = { name: m.name, unitLabel: m.unitLabel, taskTemplates: JSON.parse(JSON.stringify(DEFAULT_TEMPLATES)) };
+      }
+    });
+    if (!parsed.publications) parsed.publications = [];
+    return parsed;
+  } catch (e) {
+    console.error('load error', e);
+    return defaultData();
+  }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+}
+
+/* ===================== DATE HELPERS ===================== */
+function parseDate(str) {
+  if (!str) return null;
+  const d = new Date(str + 'T00:00:00');
+  return isNaN(d.getTime()) ? null : d;
+}
+function addDays(date, days) {
+  const d = new Date(date.getTime());
+  d.setDate(d.getDate() + days);
+  return d;
+}
+function fmtDate(date) {
+  if (!date) return '—';
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const yyyy = date.getFullYear();
+  return dd + '.' + mm + '.' + yyyy;
+}
+function toISO(date) {
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const yyyy = date.getFullYear();
+  return yyyy + '-' + mm + '-' + dd;
+}
+function daysUntil(date) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(date.getTime()); d.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+function fmtKr(n) {
+  n = Number(n) || 0;
+  return n.toLocaleString('da-DK') + ' kr.';
+}
+
+/* ===================== TASK GENERATION ===================== */
+function generateTasks(mediaKey, deadlineISO) {
+  const deadline = parseDate(deadlineISO);
+  const templates = DATA.mediaTypes[mediaKey].taskTemplates;
+  if (!deadline) return templates.map(t => ({ templateId: t.id, name: t.name, offsetDays: t.offsetDays, dueDate: null, done: false }));
+  return templates.map(t => ({
+    templateId: t.id,
+    name: t.name,
+    offsetDays: t.offsetDays,
+    dueDate: toISO(addDays(deadline, -t.offsetDays)),
+    done: false
+  }));
+}
+
+/* ===================== RENDER: TABS ===================== */
+let currentView = 'oversigt';
+
+function renderTabs() {
+  const row = document.getElementById('tabsRow');
+  let html = '';
+  html += tabBtn('oversigt', 'Oversigt');
+  MEDIA_DEFS.forEach(m => { html += tabBtn(m.key, m.name); });
+  html += tabBtn('admin', 'Admin');
+  row.innerHTML = html;
+}
+function tabBtn(key, label) {
+  return '<button class="tab-btn' + (currentView === key ? ' active' : '') + '" onclick="switchView(\'' + key + '\')">' + label + '</button>';
+}
+function switchView(key) {
+  currentView = key;
+  renderTabs();
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  const target = document.getElementById('view-' + key);
+  if (target) target.style.display = 'block';
+  if (key === 'oversigt') renderOversigt();
+  else if (key === 'admin') renderAdmin();
+  else renderMediaView(key);
+}
+
+/* ===================== BUILD MEDIA VIEW SKELETONS ===================== */
+function buildMediaViewSkeletons() {
+  const container = document.getElementById('mediaViews');
+  let html = '';
+  MEDIA_DEFS.forEach(m => {
+    html += '<div class="view" id="view-' + m.key + '">' +
+      '<div class="card">' +
+      '<h2>' + m.name + ' — ' + esc(DATA.mediaTypes[m.key].unitLabel).toLowerCase() + 'r</h2>' +
+      '<button class="btn small" onclick="openPubModal(null, \'' + m.key + '\')">+ Ny ' + esc(DATA.mediaTypes[m.key].unitLabel).toLowerCase() + '</button>' +
+      '<div id="pubList-' + m.key + '" style="margin-top:16px"></div>' +
+      '</div>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+/* ===================== RENDER: MEDIA VIEW ===================== */
+function renderMediaView(mediaKey) {
+  const list = document.getElementById('pubList-' + mediaKey);
+  const pubs = DATA.publications.filter(p => p.mediaType === mediaKey).sort((a,b) => (a.deadline||'').localeCompare(b.deadline||''));
+  if (pubs.length === 0) {
+    list.innerHTML = '<div class="empty">Ingen udgivelser oprettet endnu.</div>';
+    return;
+  }
+  list.innerHTML = pubs.map(p => renderPubBlock(p)).join('');
+}
+
+function renderPubBlock(p) {
+  const openRateMail = p.mail && Number(p.mail.udsendtAntal) > 0 ? ((Number(p.mail.aabnetAntal)||0) / Number(p.mail.udsendtAntal) * 100).toFixed(1) : '—';
+  const openRateRyk = p.rykker && Number(p.rykker.udsendtAntal) > 0 ? ((Number(p.rykker.aabnetAntal)||0) / Number(p.rykker.udsendtAntal) * 100).toFixed(1) : '—';
+  const diff = (Number(p.omsaetning)||0) - (Number(p.budget)||0);
+  let html = '<div class="pub-block">';
+  html += '<div class="pub-head"><div>';
+  html += '<div class="pub-title">' + esc(p.title) + '</div>';
+  html += '<div class="pub-meta">Udgivelse: ' + fmtDate(parseDate(p.udgivelsesdato)) + ' &nbsp;·&nbsp; Deadline: ' + fmtDate(parseDate(p.deadline)) + '</div>';
+  if (p.temaer) html += '<div class="pub-meta" style="margin-top:4px">Temaer: ' + esc(p.temaer) + '</div>';
+  html += '</div><div class="row-actions">';
+  html += '<button class="btn secondary small" onclick="openPubModal(\'' + p.id + '\')">Redigér</button>';
+  html += '<button class="btn danger small" onclick="deletePub(\'' + p.id + '\')">Slet</button>';
+  html += '</div></div>';
+
+  html += '<div class="pub-nums">';
+  html += numBox(fmtKr(p.omsaetning), 'Omsætning');
+  html += numBox(fmtKr(p.budget), 'Budget');
+  html += numBox((diff >= 0 ? '+' : '') + fmtKr(diff), 'Diff. oms./budget');
+  html += numBox(p.tasks.filter(t=>t.done).length + ' / ' + p.tasks.length, 'Opgaver klaret');
+  html += '</div>';
+
+  html += '<h3 style="margin-top:14px">Opgaver</h3>';
+  html += '<div>';
+  p.tasks.forEach((t, idx) => {
+    const due = t.dueDate ? parseDate(t.dueDate) : null;
+    const dleft = due ? daysUntil(due) : null;
+    let pill = '';
+    if (!t.done && dleft !== null) {
+      if (dleft < 0) pill = '<span class="pill ov">Overskredet</span>';
+      else if (dleft <= 3) pill = '<span class="pill so">' + dleft + ' dage</span>';
+    }
+    if (t.done) pill = '<span class="pill done">Klaret</span>';
+    html += '<div class="task-row">';
+    html += '<input type="checkbox" ' + (t.done ? 'checked' : '') + ' onchange="toggleTask(\'' + p.id + '\',' + idx + ')">';
+    html += '<span class="tn' + (t.done ? ' done-text' : '') + '">' + esc(t.name) + '</span>';
+    html += '<span class="td-date">' + (due ? fmtDate(due) : '—') + '</span>';
+    html += pill;
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<button class="btn secondary small" style="margin-top:10px" onclick="regenerateTasks(\'' + p.id + '\')">Genskab opgaver fra skabelon</button>';
+
+  html += '<div class="mail-box"><div class="mb-title">Mail til annoncører</div>';
+  html += '<div class="mail-stats">';
+  html += '<div><div class="mv">' + (p.mail && p.mail.udsendtAntal ? p.mail.udsendtAntal : '—') + '</div>Udsendt til</div>';
+  html += '<div><div class="mv">' + (p.mail && p.mail.aabnetAntal ? p.mail.aabnetAntal : '—') + '</div>Åbnet af</div>';
+  html += '<div><div class="mv">' + openRateMail + (openRateMail !== '—' ? '%' : '') + '</div>Åbningsrate</div>';
+  html += '</div>';
+  html += '<div class="mb-title" style="margin-top:10px">Rykker</div>';
+  html += '<div class="mail-stats">';
+  html += '<div><div class="mv">' + (p.rykker && p.rykker.udsendtAntal ? p.rykker.udsendtAntal : '—') + '</div>Udsendt til</div>';
+  html += '<div><div class="mv">' + (p.rykker && p.rykker.aabnetAntal ? p.rykker.aabnetAntal : '—') + '</div>Åbnet af</div>';
+  html += '<div><div class="mv">' + openRateRyk + (openRateRyk !== '—' ? '%' : '') + '</div>Åbningsrate</div>';
+  html += '</div></div>';
+
+  html += '</div>';
+  return html;
+}
+function numBox(val, lab) {
+  return '<div class="pn"><div class="pn-val">' + val + '</div><div class="pn-lab">' + lab + '</div></div>';
+}
+
+function toggleTask(pubId, idx) {
+  const p = DATA.publications.find(x => x.id === pubId);
+  if (!p) return;
+  p.tasks[idx].done = !p.tasks[idx].done;
+  p.tasks[idx].completedDate = p.tasks[idx].done ? toISO(new Date()) : null;
+  save();
+  renderMediaView(p.mediaType);
+  if (currentView === 'oversigt') renderOversigt();
+}
+
+function regenerateTasks(pubId) {
+  const p = DATA.publications.find(x => x.id === pubId);
+  if (!p) return;
+  if (!confirm('Genskab opgaver fra den aktuelle skabelon? Igangværende afkrydsninger på denne udgivelse går tabt.')) return;
+  p.tasks = generateTasks(p.mediaType, p.deadline);
+  save();
+  renderMediaView(p.mediaType);
+}
+
+function deletePub(pubId) {
+  const p = DATA.publications.find(x => x.id === pubId);
+  if (!p) return;
+  if (!confirm('Slet "' + p.title + '"? Kan ikke fortrydes.')) return;
+  DATA.publications = DATA.publications.filter(x => x.id !== pubId);
+  save();
+  renderMediaView(p.mediaType);
+  if (currentView === 'oversigt') renderOversigt();
+}
+
+/* ===================== PUBLICATION MODAL ===================== */
+function openPubModal(pubId, mediaKeyForNew) {
+  const editing = !!pubId;
+  const p = editing ? DATA.publications.find(x => x.id === pubId) : {
+    id: 'pub_' + Date.now(),
+    mediaType: mediaKeyForNew,
+    title: '',
+    udgivelsesdato: '',
+    deadline: '',
+    temaer: '',
+    omsaetning: '',
+    budget: '',
+    tasks: [],
+    mail: { udsendtAntal: '', dato: '', aabnetAntal: '', aabningerTotal: '' },
+    rykker: { udsendtAntal: '', dato: '', aabnetAntal: '', aabningerTotal: '' }
+  };
+  const mediaName = DATA.mediaTypes[p.mediaType].name;
+
+  const html = '<div class="modal-overlay" id="pubModalOverlay"><div class="modal-box">' +
+    '<h3>' + (editing ? 'Redigér' : 'Ny') + ' — ' + esc(mediaName) + '</h3>' +
+    '<div class="form-grid">' +
+      field('full', 'Titel / navn', 'input', 'pf_title', p.title, 'text', 'fx "Marts 2026" eller "BygTek #3 2026"') +
+      field('', 'Udgivelsesdato', 'input', 'pf_udg', p.udgivelsesdato, 'date') +
+      field('', 'Deadline', 'input', 'pf_deadline', p.deadline, 'date') +
+      field('full', 'Temaer', 'textarea', 'pf_temaer', p.temaer) +
+      field('', 'Omsætning (kr.)', 'input', 'pf_oms', p.omsaetning, 'number') +
+      field('', 'Budget (kr.)', 'input', 'pf_budget', p.budget, 'number') +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<h3 style="font-size:13px">Mail til annoncører</h3>' +
+    '<div class="form-grid">' +
+      field('', 'Udsendt til (antal)', 'input', 'pf_mail_udsendt', p.mail.udsendtAntal, 'number') +
+      field('', 'Dato', 'input', 'pf_mail_dato', p.mail.dato, 'date') +
+      field('', 'Antal der har åbnet', 'input', 'pf_mail_aabnet', p.mail.aabnetAntal, 'number') +
+      field('', 'Åbninger i alt', 'input', 'pf_mail_aabninger', p.mail.aabningerTotal, 'number') +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<h3 style="font-size:13px">Rykker</h3>' +
+    '<div class="form-grid">' +
+      field('', 'Udsendt til (antal)', 'input', 'pf_ryk_udsendt', p.rykker.udsendtAntal, 'number') +
+      field('', 'Dato for rykker', 'input', 'pf_ryk_dato', p.rykker.dato, 'date') +
+      field('', 'Antal der har åbnet', 'input', 'pf_ryk_aabnet', p.rykker.aabnetAntal, 'number') +
+      field('', 'Åbninger i alt', 'input', 'pf_ryk_aabninger', p.rykker.aabningerTotal, 'number') +
+    '</div>' +
+    '<div class="modal-actions">' +
+      '<button class="btn secondary" onclick="closeModal()">Annullér</button>' +
+      '<button class="btn" onclick="savePub(' + (editing ? '\'' + p.id + '\'' : 'null') + ', \'' + p.mediaType + '\')">Gem</button>' +
+    '</div>' +
+  '</div></div>';
+
+  document.getElementById('modalRoot').innerHTML = html;
+}
+
+function field(cls, label, tag, id, value, type, placeholder) {
+  value = value === undefined || value === null ? '' : value;
+  let input;
+  if (tag === 'textarea') {
+    input = '<textarea id="' + id + '" placeholder="' + (placeholder||'') + '">' + esc(value) + '</textarea>';
+  } else {
+    input = '<input id="' + id + '" type="' + (type||'text') + '" value="' + esc(value) + '" placeholder="' + (placeholder||'') + '">';
+  }
+  return '<div class="form-field' + (cls ? ' ' + cls : '') + '"><label>' + label + '</label>' + input + '</div>';
+}
+
+function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+function savePub(pubId, mediaKey) {
+  const title = val('pf_title').trim();
+  const deadline = val('pf_deadline');
+  if (!title) { alert('Titel er påkrævet.'); return; }
+  if (!deadline) { alert('Deadline er påkrævet.'); return; }
+
+  let p = pubId ? DATA.publications.find(x => x.id === pubId) : null;
+  const isNew = !p;
+  if (isNew) {
+    p = { id: 'pub_' + Date.now(), mediaType: mediaKey, tasks: [] };
+    DATA.publications.push(p);
+  }
+  const deadlineChanged = p.deadline !== deadline;
+  p.title = title;
+  p.udgivelsesdato = val('pf_udg');
+  p.deadline = deadline;
+  p.temaer = val('pf_temaer');
+  p.omsaetning = val('pf_oms');
+  p.budget = val('pf_budget');
+  p.mail = {
+    udsendtAntal: val('pf_mail_udsendt'),
+    dato: val('pf_mail_dato'),
+    aabnetAntal: val('pf_mail_aabnet'),
+    aabningerTotal: val('pf_mail_aabninger')
+  };
+  p.rykker = {
+    udsendtAntal: val('pf_ryk_udsendt'),
+    dato: val('pf_ryk_dato'),
+    aabnetAntal: val('pf_ryk_aabnet'),
+    aabningerTotal: val('pf_ryk_aabninger')
+  };
+  if (isNew || (deadlineChanged && p.tasks.length === 0)) {
+    p.tasks = generateTasks(p.mediaType, p.deadline);
+  } else if (isNew === false && deadlineChanged) {
+    // keep existing tasks but flag nothing automatically; user can regenerate manually
+  }
+  save();
+  closeModal();
+  renderMediaView(p.mediaType);
+  if (currentView === 'oversigt') renderOversigt();
+}
+
+function closeModal() {
+  document.getElementById('modalRoot').innerHTML = '';
+}
+
+/* ===================== OVERSIGT ===================== */
+function renderOversigt() {
+  // summary boxes
+  let totalOms = 0, totalBudget = 0, totalPubs = DATA.publications.length;
+  let openTasks = 0;
+  DATA.publications.forEach(p => {
+    totalOms += Number(p.omsaetning) || 0;
+    totalBudget += Number(p.budget) || 0;
+    openTasks += p.tasks.filter(t => !t.done).length;
+  });
+  const sg = document.getElementById('summaryGrid');
+  sg.innerHTML =
+    sumBox(fmtKr(totalOms), 'Omsætning i alt') +
+    sumBox(fmtKr(totalBudget), 'Budget i alt') +
+    sumBox(String(totalPubs), 'Udgivelser') +
+    sumBox(String(openTasks), 'Åbne opgaver');
+
+  // tasks table
+  const rows = [];
+  DATA.publications.forEach(p => {
+    p.tasks.forEach((t, idx) => {
+      if (t.done) return;
+      if (!t.dueDate) return;
+      const due = parseDate(t.dueDate);
+      const dleft = daysUntil(due);
+      if (dleft > 30) return;
+      rows.push({ p, t, idx, due, dleft });
+    });
+  });
+  rows.sort((a,b) => a.due - b.due);
+  const body = document.getElementById('overviewTaskBody');
+  if (rows.length === 0) {
+    body.innerHTML = '<tr><td colspan="6" class="empty">Ingen forfaldne eller kommende opgaver de næste 30 dage.</td></tr>';
+  } else {
+    body.innerHTML = rows.map(r => {
+      const rowClass = r.dleft < 0 ? 'overdue' : (r.dleft <= 3 ? 'soon' : '');
+      let pill = r.dleft < 0 ? '<span class="pill ov">Overskredet ' + Math.abs(r.dleft) + ' d.</span>' : (r.dleft <= 3 ? '<span class="pill so">' + r.dleft + ' dage</span>' : '<span class="pill ok">' + r.dleft + ' dage</span>');
+      return '<tr class="' + rowClass + '">' +
+        '<td>' + pill + '</td>' +
+        '<td>' + esc(r.t.name) + '</td>' +
+        '<td><span class="media-chip">' + esc(DATA.mediaTypes[r.p.mediaType].name) + '</span></td>' +
+        '<td>' + esc(r.p.title) + '</td>' +
+        '<td>' + fmtDate(r.due) + '</td>' +
+        '<td><button class="btn small secondary" onclick="toggleTask(\'' + r.p.id + '\',' + r.idx + ');renderOversigt()">Markér klar</button></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  // revenue table
+  const revBody = document.getElementById('revenueBody');
+  let revHtml = '';
+  MEDIA_DEFS.forEach(m => {
+    const pubs = DATA.publications.filter(p => p.mediaType === m.key);
+    if (pubs.length === 0) return;
+    const oms = pubs.reduce((s,p) => s + (Number(p.omsaetning)||0), 0);
+    const bud = pubs.reduce((s,p) => s + (Number(p.budget)||0), 0);
+    const diff = oms - bud;
+    revHtml += '<tr><td><span class="media-chip">' + esc(m.name) + '</span></td><td>' + pubs.length + '</td><td>' + fmtKr(oms) + '</td><td>' + fmtKr(bud) + '</td><td>' + (diff>=0?'+':'') + fmtKr(diff) + '</td></tr>';
+  });
+  revBody.innerHTML = revHtml || '<tr><td colspan="5" class="empty">Ingen data endnu.</td></tr>';
+}
+function sumBox(val, lab) {
+  return '<div class="summary-box"><div class="sv">' + val + '</div><div class="sl">' + lab + '</div></div>';
+}
+
+/* ===================== ADMIN ===================== */
+function renderAdmin() {
+  const sel = document.getElementById('mediaSelectAdmin');
+  sel.innerHTML = MEDIA_DEFS.map(m => '<option value="' + m.key + '">' + esc(m.name) + '</option>').join('');
+  renderAdminTemplates();
+  updateNotifBtn();
+}
+function renderAdminTemplates() {
+  const mediaKey = document.getElementById('mediaSelectAdmin').value;
+  const templates = DATA.mediaTypes[mediaKey].taskTemplates;
+  const list = document.getElementById('tplList');
+  let html = '<div class="tpl-row" style="font-weight:bold;font-size:11px;color:#888;text-transform:uppercase"><div>Opgave</div><div>Dage før deadline</div><div></div><div></div></div>';
+  html += templates.map((t, idx) =>
+    '<div class="tpl-row">' +
+    '<input value="' + esc(t.name) + '" onchange="updateTplField(\'' + mediaKey + '\',' + idx + ',\'name\',this.value)">' +
+    '<input type="number" value="' + t.offsetDays + '" onchange="updateTplField(\'' + mediaKey + '\',' + idx + ',\'offsetDays\',this.value)">' +
+    '<div></div>' +
+    '<button class="btn danger small" onclick="removeTplRow(\'' + mediaKey + '\',' + idx + ')">Slet</button>' +
+    '</div>'
+  ).join('');
+  list.innerHTML = html;
+}
+function updateTplField(mediaKey, idx, field, value) {
+  const t = DATA.mediaTypes[mediaKey].taskTemplates[idx];
+  if (field === 'offsetDays') t.offsetDays = parseInt(value, 10) || 0;
+  else t.name = value;
+}
+function removeTplRow(mediaKey, idx) {
+  DATA.mediaTypes[mediaKey].taskTemplates.splice(idx, 1);
+  renderAdminTemplates();
+}
+function addTemplateRow() {
+  const mediaKey = document.getElementById('mediaSelectAdmin').value;
+  DATA.mediaTypes[mediaKey].taskTemplates.push({ id: 't' + Date.now(), name: 'Ny opgave', offsetDays: 0 });
+  renderAdminTemplates();
+}
+function saveTemplates() {
+  save();
+  alert('Skabeloner gemt for dette medie. Brug "Genskab opgaver" på eksisterende udgivelser for at anvende ændringerne der.');
+}
+
+/* ===================== NOTIFICATIONS ===================== */
+function updateNotifBtn() {
+  const btn = document.getElementById('notifBtn');
+  if (!('Notification' in window)) {
+    btn.textContent = 'Browser-notifikationer understøttes ikke her';
+    btn.disabled = true;
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    btn.textContent = 'Browser-påmindelser er aktiveret ✓';
+  } else {
+    btn.textContent = 'Aktivér browser-påmindelser';
+  }
+}
+function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(() => {
+    updateNotifBtn();
+    checkReminders();
+  });
+}
+function checkReminders() {
+  renderNotifBanner();
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const due = [];
+  DATA.publications.forEach(p => {
+    p.tasks.forEach(t => {
+      if (t.done || !t.dueDate) return;
+      const d = daysUntil(parseDate(t.dueDate));
+      if (d <= 0) due.push(t.name + ' — ' + p.title);
+    });
+  });
+  if (due.length > 0) {
+    try {
+      new Notification('Tidsplan Odsgard — ' + due.length + ' opgave(r) forfalder', {
+        body: due.slice(0, 5).join('\n') + (due.length > 5 ? '\n…' : '')
+      });
+    } catch (e) { /* ignore */ }
+  }
+}
+function renderNotifBanner() {
+  let overdueCount = 0, soonCount = 0;
+  DATA.publications.forEach(p => {
+    p.tasks.forEach(t => {
+      if (t.done || !t.dueDate) return;
+      const d = daysUntil(parseDate(t.dueDate));
+      if (d < 0) overdueCount++;
+      else if (d <= 3) soonCount++;
+    });
+  });
+  const banner = document.getElementById('notifBanner');
+  if (overdueCount === 0 && soonCount === 0) { banner.innerHTML = ''; return; }
+  let msg = [];
+  if (overdueCount > 0) msg.push(overdueCount + ' overskredet opgave' + (overdueCount>1?'r':''));
+  if (soonCount > 0) msg.push(soonCount + ' opgave' + (soonCount>1?'r':'') + ' forfalder snart');
+  banner.innerHTML = '<div class="notif-banner"><span>⚠ ' + msg.join(' · ') + '</span><button class="btn small secondary" onclick="switchView(\'oversigt\')">Se oversigt</button></div>';
+}
+
+/* ===================== IMPORT / EXPORT ===================== */
+function exportData() {
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tidsplan_odsgard_' + toISO(new Date()) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function importData(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.mediaTypes || !parsed.publications) throw new Error('Ugyldigt format');
+      if (!confirm('Importér data? Dette overskriver den nuværende data i denne browser.')) return;
+      DATA = parsed;
+      MEDIA_DEFS.forEach(m => {
+        if (!DATA.mediaTypes[m.key]) DATA.mediaTypes[m.key] = { name: m.name, unitLabel: m.unitLabel, taskTemplates: JSON.parse(JSON.stringify(DEFAULT_TEMPLATES)) };
+      });
+      save();
+      init();
+      alert('Data importeret.');
+    } catch (err) {
+      alert('Kunne ikke læse filen: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+function resetAll() {
+  if (!confirm('Slet ALT data i denne tidsplan? Kan ikke fortrydes.')) return;
+  DATA = defaultData();
+  save();
+  init();
+}
+
+/* ===================== UTIL ===================== */
+function esc(str) {
+  if (str === undefined || str === null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ===================== INIT ===================== */
+function init() {
+  renderTabs();
+  buildMediaViewSkeletons();
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.getElementById('view-oversigt').style.display = 'block';
+  renderOversigt();
+  updateNotifBtn();
+  checkReminders();
+  setInterval(checkReminders, 60 * 60 * 1000);
+}
+
+init();
+</script>
+</body>
+</html>

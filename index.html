@@ -8,7 +8,8 @@
         :root {
             --primary: #1a365d;
             --primary-light: #ebf8ff;
-            --accent: #2b6cb0;
+            --accent: #3182ce; /* Mere klar lyseblå */
+            --accent-hover: #63b3ed;
             --text-main: #2d3748;
             --text-muted: #4a5568;
             --bg: #f7fafc;
@@ -104,7 +105,6 @@
             text-align: left;
         }
 
-        /* Overskrift med farve som øverste kasses venstre kant */
         .prototype-banner h3 {
             margin: 0 0 12px 0;
             color: #ffffff;
@@ -115,6 +115,7 @@
             color: #e2e8f0;
         }
 
+        /* Lyseblå knap */
         .btn-link {
             display: inline-block;
             background-color: var(--accent);
@@ -125,10 +126,18 @@
             font-weight: bold;
             margin-top: 12px;
             font-size: 16px;
+            transition: background-color 0.2s ease;
         }
 
         .btn-link:hover {
-            background-color: #3182ce;
+            background-color: var(--accent-hover);
+        }
+
+        .code-hint {
+            margin-top: 10px;
+            font-size: 13.5px;
+            color: #cbd5e0;
+            font-style: italic;
         }
 
         /* Nederste dialogkasse i mørkeblå */
@@ -264,7 +273,10 @@
         <h3>Visualisering & Eksempel på løsning</h3>
         <p>Enkelte af billederne ovenfor stammer fra min første tidsregistreringsløsning – en løsning, jeg bruger den dag i dag, og som gør hverdagen meget nemmere for mig med både registrering og rapportering.</p>
         <p>Ud fra de erfaringer har jeg opbygget et nyt, samlet oplæg. Du bør helt sikkert prøve at klikke dig igennem det – selvom ikke alle funktioner er bygget helt færdige endnu, giver det forhåbentlig et godt og konkret billede af mine tanker og den opbygning, jeg ser for mig:</p>
-        <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
+        <div>
+            <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
+        </div>
+        <div class="code-hint">Kode: "Min mail" / Kimanker</div>
     </div>
 
     <!-- Dialog og samarbejdskort -->
@@ -280,7 +292,7 @@
     </div>
 
     <footer>
-        <p>&copy; Tidsregistrering - Input & Oplæg</p>
+        <p>&copy; Tidsregistrering - Input & Oplæg af Kim Anker</p>
     </footer>
 
 </div>

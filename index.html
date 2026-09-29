@@ -94,20 +94,25 @@
             font-style: italic;
         }
 
+        /* Samme mørkeblå stil som bundkassen */
         .prototype-banner {
-            background-color: #feebc8;
-            border: 1px solid #fbd38d;
-            border-left: 6px solid #dd6b20;
-            border-radius: 8px;
-            padding: 25px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
             margin: 30px 0;
-            text-align: center;
+            text-align: left;
         }
 
+        /* Overskrift med farve som øverste kasses venstre kant */
         .prototype-banner h3 {
-            margin: 0 0 10px 0;
-            color: #ffffff;;
+            margin: 0 0 12px 0;
+            color: #ffffff;
             font-size: 20px;
+        }
+
+        .prototype-banner p {
+            color: #e2e8f0;
         }
 
         .btn-link {
@@ -123,34 +128,41 @@
         }
 
         .btn-link:hover {
-            background-color: var(--primary);
+            background-color: #3182ce;
         }
 
+        /* Nederste dialogkasse i mørkeblå */
         .dialogue-card {
             background-color: var(--primary);
             color: #ffffff;
             border-radius: 10px;
             padding: 30px;
             margin-bottom: 30px;
-            text-align: center;
+            text-align: left;
         }
 
         .dialogue-card h3 {
             margin-top: 0;
             color: #ffffff;
-            font-size: 19px;
+            font-size: 20px;
         }
 
         .dialogue-card p {
             color: #e2e8f0;
         }
+
+        .signature {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
         }
 
         footer {
             text-align: center;
             font-size: 14px;
             color: var(--text-muted);
-            margin-top: 40px;
+            margin-top: 20px;
             padding-bottom: 20px;
         }
     </style>
@@ -247,21 +259,30 @@
         <p><strong>Enkel stempling & flow:</strong> Gøre stemplingen uafhængig af placering (kontor/hjemme), fjerne spærretiden (3 min.) ved gen-stempling, sikre at popups lukker automatisk efter indsendelse, og ensrette logikken for det automatiske frokostfradrag.</p>
     </div>
 
-    <!-- Banner med link til mit oplæg på et tidsregistrerings løsning for Odsgard -->
+    <!-- Banner med link til interaktivt oplæg -->
     <div class="prototype-banner">
         <h3>Visualisering & Eksempel på løsning</h3>
         <p>Enkelte af billederne ovenfor stammer fra min første tidsregistreringsløsning – en løsning, jeg bruger den dag i dag, og som gør hverdagen meget nemmere for mig med både registrering og rapportering.</p>
         <p>Ud fra de erfaringer har jeg opbygget et nyt, samlet oplæg. Du bør helt sikkert prøve at klikke dig igennem det – selvom ikke alle funktioner er bygget helt færdige endnu, giver det forhåbentlig et godt og konkret billede af mine tanker og den opbygning, jeg ser for mig:</p>
-        <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her. Koden er min mail og Kimanker&rarr;</a>
+        <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
     </div>
 
     <!-- Dialog og samarbejdskort -->
     <div class="dialogue-card">
         <h3>Lad os tage en snak om mulighederne</h3>
         <p>Jeg er meget åben for en videre dialog om mine tanker, og hvordan vi sammen kan kombinere de bedste ideer til en super anvendelig løsning for hele huset.</p>
-        <p>Sig endelig til, når du har haft tid til at kigge på det, så kan vi tage en kop kaffe og vender mulighederne!<p>
-        <p>Hilsen<br><strong>Kim</strong></p>
+        <p>Sig endelig til, når du har haft tid til at kigge på det, så tager vi en kop kaffe og vender mulighederne!</p>
+        
+        <p class="signature">
+            Venlig hilsen<br>
+            <strong>Kim</strong>
+        </p>
     </div>
+
+    <footer>
+        <p>&copy; Tidsregistrering - Input & Oplæg</p>
+    </footer>
+
 </div>
 
 </body>

@@ -140,13 +140,13 @@
         <h1>Input og tanker til vores nye tidsregistrering</h1>
         <div class="intro-text">
             <p><strong>Hej Gustav,</strong></p>
-            <p>Det er et rigtig fint stykke arbejde, du har lavet! Det er skønt at se, at der langt om længe er en god tidsregistreringsløsning på vej til os. Tankerne bag systemet er super gode, og det flugter i høj grad med de principper og erfaringer, jeg selv har gjort mig og brugt i min egen tidsregistrering den seneste tid.</p>
+            <p>Det er et rigtig fint stykke arbejde, du har lavet!<br> Det er skønt at se, at der langt om længe er en god tidsregistreringsløsning på vej til os. <br>Tankerne bag systemet er super gode, og det flugter i høj grad med de principper og erfaringer, jeg selv har gjort mig og brugt i min egen tidsregistrering den seneste tid.</p>
             <p>For at understøtte hverdagen bedst muligt for alle medarbejdere og skabe et så smidigt workflow som muligt, har jeg samlet en række tanker, erfaringer og konkrete forslag til tilføjelser nedenfor.</p>
         </div>
 
         <div class="prototype-banner">
             <h3>Visualisering & Eksempel på løsning</h3>
-            <p>Jeg har opbygget et visuelt oplæg til, hvordan brugerfladen, overblikket og administrationen kan struktureres helt konkret. Det giver et hurtigt billede af principperne:</p>
+            <p>Jeg har opbygget et visuelt oplæg til, hvordan brugerfladen, overblikket og administrationen kan struktureres helt konkret. Det giver et hurtigt billede af principperne (dette er et oplæg og nogle elementer er endnu ikke i denne version, som bl.a. flextider i toppen til højre på ugeskemaet):</p>
             <!-- Erstat 'tidsreg_oplæg.html' med navnet på din html-prototype på GitHub -->
             <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
         </div>
@@ -156,7 +156,7 @@
     <div class="section-card">
         <h2>1. Daglig stempling og direkte ugevisning</h2>
         <p>Tanken med den daglige registrering er, at det skal være så nemt og intuitivt som overhovedet muligt. Så snart man åbner systemet, bør det automatisk stille skarpt på "i dag". Her skal man med ét enkelt tryk på <strong>Start</strong> eller <strong>Slut</strong> kunne registrere sin arbejdstid – eller vælge fravær såsom ferie, sygdom eller afspadsering.</p>
-        <p>Ved at samle stemplingen direkte på ugeoversigten slipper vi for at have en separat side til stempling og en anden til oversigten. Én samlet ugevisning er nok, hvor man kan foretage det hele i samme skærmbillede. Samtidig vil det gøre oplevelsen væsentligt mere overskuelig, hvis hver visning dækker præcis én uge ad gangen, så man sidst på ugen slipper for at skulle scrolle ned over en lang liste.</p>
+        <p>Ved at samle stemplingen direkte på ugeoversigten slipper vi for at have en separat side til stempling og en anden til oversigten. Én samlet ugevisning er nok, hvor man kan foretage det hele i samme skærmbillede. Samtidig vil det gøre oplevelsen væsentligt mere overskuelig, hvis hver visning dækker præcis én uge ad gangen, så man sidst på måneden slipper for at skulle scrolle ned over en lang liste.</p>
 
         <div class="img-box">
             <img src="ugeskema-forslag-1.png" alt="Forslag til stempling i ugeskema">
@@ -192,7 +192,7 @@
         <h2>3. Håndtering af ferie, fravær og logik</h2>
         <p>Når det kommer til ferie og fravær, oplever vi ofte nogle praktiske scenarier i hverdagen, som kræver en fleksibel opbygning:</p>
         <p><strong>Fravær på forskud og efterregistrering:</strong> Hvis man skal holde 14 dages ferie frem i tiden, bør man kunne lægge det ind i én samlet handling i stedet for at skulle logge på hver dag eller taste hver enkelt dag manuelt bagefter. Det samme gælder ved hjemkomst fra fravær – her skal det være nemt at registrere perioden samlet.</p>
-        <p><strong>Skelnen og logik i fravær:</strong> Der bør skelnes tydeligt mellem "Feriefridag" og "Fri", da fri er arbejdsgiverbetalt, mens feriefridage trækkes fra den enkeltes optjente saldo (og eventuelle uafviklede feriefridage pr. 31/12 overføres til ny periode). Samtidig er det vigtigt, at systemet forhindrer dobbeltregistreringer (f.eks. at stå som både syg, på ferie og på arbejde samme dag). Hvis en dag er valgt som heldagsfravær, bør systemet automatisk låse for, at man kan stemple ind/ud den dag.</p>
+        <p><strong>Skelnen og logik i fravær:</strong> Der bør skelnes tydeligt mellem "Feriefridag" og "Fri", da fri er arbejdsgiverbetalt, mens feriefridage trækkes fra den enkeltes optjente saldo. Samtidig er det vigtigt, at systemet forhindrer dobbeltregistreringer (f.eks. at stå som både syg, på ferie og på arbejde samme dag). Hvis en dag er valgt som heldagsfravær, bør systemet automatisk låse for, at man kan stemple ind/ud den dag.</p>
 
         <div class="img-box">
             <img src="dobbeltregistrering.png" alt="Dobbeltregistrering i fravær">
@@ -203,14 +203,14 @@
     <!-- Sektion 4 -->
     <div class="section-card">
         <h2>4. Rapportering, download og administration</h2>
-        <p>For den enkelte medarbejder giver det en god tryghed altid at kunne trække sin egen oversigt ud i Excel – enten for en hel måned ad gangen eller opdelt på bestemte kategorier som sygdom, ferie og afspadsering.</p>
+        <p>For den enkelte medarbejder giver det en god tryghed altid at kunne trække sin egen oversigt ud i Excel – enten for en hel måned ad gangen eller opdelt på bestemte kategorier som sygdom, feriefridage, ferie og afspadsering.</p>
 
         <div class="img-box">
             <img src="download-maaned.png" alt="Månedsoversigt og udtræk">
             <div class="img-caption">Forslag: Månedsoversigt med mulighed for at hente eget skema.</div>
         </div>
 
-        <p>På administrationsdelen kan ledelsen få et fuldstændigt og enkelt overblik over alle medarbejderes saldi samt mulighed for at trække tilsvarende rapporter ud. I den forbindelse vil jeg også foreslå, at vi genovervejer kravet om, at hver eneste lille ændring skal godkendes af admin.</p>
+        <p>På administrationsdelen (som er låst) kan man få et fuldstændigt og enkelt overblik over alle medarbejderes saldi samt mulighed for at trække tilsvarende rapporter ud. I den forbindelse vil jeg også foreslå, at vi genovervejer kravet om, at hver eneste lille ændring skal godkendes af admin.</p>
         <p>Vi laver jo kun ændringer, når der er en reel grund til det, og et godkendelsesflow på alt kan hurtigt skabe en masse unødig administration i en travl hverdag – og indirekte sende et signal om mistillid. I stedet kunne admin have en samlet oversigt over foretagne ændringer og blot tage en snak, hvis der er noget uafklaret.</p>
 
         <div class="img-box">
@@ -223,7 +223,7 @@
     <div class="section-card">
         <h2>5. Mindre, praktiske og tekniske justeringer</h2>
         <p>Til sidst er der et par mindre tekniske og praktiske ting, som vil gøre oplevelsen helt skarp:</p>
-        <p><strong>Login & stempling:</strong> Det bør være lige så simpelt at logge ind, uanset om man er på kontoret eller arbejder ude. Det vigtigste er tidspunktet – lokation kan evt. tilføjes som en note. Ligeledes er det vigtigt at sikre, at systemet fungerer optimalt på mobil (f.eks. i Safari på iPhone), og at en standard "Glemt adgangskode"-funktion er tilgængelig, da det er her, de fleste har brug for hjælp.</p>
+        <p><strong>Login & stempling:</strong> Det bør være lige så simpelt at logge ind, uanset om man er på kontoret eller arbejder ude. Det vigtigste er tidspunktet – lokation kan evt. tilføjes som en note. Ligeledes er det vigtigt at sikre, at systemet fungerer optimalt på mobil (f.eks. i Safari på iPhone), og at en standard "Glemt adgangskode"-funktion er tilgængelig, og ikke kun oprette ny adgangskode ved at indtaste den nuværende, da det er her, de fleste har brug for hjælp.</p>
         <p><strong>Småkorrektioner:</strong> Spærretid på 3 minutter ved fejlstempling kan med fordel fjernes, stavefejlen på forsiden korrigeres ("Stempl" til "Stempel"), og popup-vinduer ved manuelle rettelser bør lukke automatisk efter indsendelse. Endelig bør reglerne for det automatiske frokostfradrag (30 min.) gøres helt konsekvente over hele linjen.</p>
     </div>
 

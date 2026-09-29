@@ -8,7 +8,7 @@
         :root {
             --primary: #1a365d;
             --primary-light: #ebf8ff;
-            --accent: #3182ce; /* Mere klar lyseblå */
+            --accent: #3182ce;
             --accent-hover: #63b3ed;
             --text-main: #2d3748;
             --text-muted: #4a5568;
@@ -95,7 +95,6 @@
             font-style: italic;
         }
 
-        /* Samme mørkeblå stil som bundkassen */
         .prototype-banner {
             background-color: var(--primary);
             color: #ffffff;
@@ -115,7 +114,6 @@
             color: #e2e8f0;
         }
 
-        /* Lyseblå knap */
         .btn-link {
             display: inline-block;
             background-color: var(--accent);
@@ -140,7 +138,6 @@
             font-style: italic;
         }
 
-        /* Nederste dialogkasse i mørkeblå */
         .dialogue-card {
             background-color: var(--primary);
             color: #ffffff;
@@ -268,15 +265,33 @@
         <p><strong>Enkel stempling & flow:</strong> Gøre stemplingen uafhængig af placering (kontor/hjemme), fjerne spærretiden (3 min.) ved gen-stempling, sikre at popups lukker automatisk efter indsendelse, og ensrette logikken for det automatiske frokostfradrag.</p>
     </div>
 
-    <!-- Banner med link til interaktivt oplæg -->
+    <!-- Banner med YouTube Video & link til interaktivt oplæg -->
     <div class="prototype-banner">
         <h3>Visualisering & Eksempel på løsning</h3>
         <p>Enkelte af billederne ovenfor stammer fra min første tidsregistreringsløsning – en løsning, jeg bruger den dag i dag, og som gør hverdagen meget nemmere for mig med både registrering og rapportering.</p>
-        <p>Ud fra de erfaringer har jeg opbygget et nyt, samlet oplæg. Du bør helt sikkert prøve at klikke dig igennem det – selvom ikke alle funktioner er bygget helt færdige endnu, giver det forhåbentlig et godt og konkret billede af mine tanker og den opbygning, jeg ser for mig:</p>
-        <div>
-            <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
+        <p>For at give det bedste indblik i tanker og arbejdsgange, har jeg optaget en samlet gennemgang af systemet, som du kan se herunder:</p>
+
+        <!-- YouTube Indlejret Video -->
+        <div style="margin: 25px 0; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+            <iframe 
+                src="https://www.youtube.com/embed/6SfPQcapEyY" 
+                title="Videogennemgang af tidsregistrering" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px;">
+            </iframe>
         </div>
-        <div class="code-hint">Kode: "Min mail" / Kimanker</div>
+
+        <!-- Link til at afprøve prototypen (EFTER videoen) -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <h4 style="color: #ffffff; font-size: 18px; margin-top: 0; margin-bottom: 8px;">Prøv prototypen selv</h4>
+            <p>Når du har set videoen, kan du klikke dig rundt i den interaktive model her (bemærk at enkelte funktioner endnu er under opbygning):</p>
+            <div>
+                <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
+            </div>
+            <div class="code-hint">Kode: "Min mail" / Kimanker</div>
+        </div>
     </div>
 
     <!-- Dialog og samarbejdskort -->
@@ -292,7 +307,7 @@
     </div>
 
     <footer>
-        <p>&copy; Tidsregistrering - Input & Oplæg af Kim Anker</p>
+        <p>&copy; Tidsregistrering - Input & Oplæg</p>
     </footer>
 
 </div>

@@ -50,35 +50,6 @@
             color: var(--text-main);
         }
 
-        .prototype-banner {
-            background-color: #feebc8;
-            border: 1px solid #fbd38d;
-            border-left: 6px solid #dd6b20;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .prototype-banner h3 {
-            margin-0 0 8px 0;
-            color: #9c4221;
-        }
-
-        .btn-link {
-            display: inline-block;
-            background-color: var(--accent);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .btn-link:hover {
-            background-color: var(--primary);
-        }
-
         .section-card {
             background-color: var(--card-bg);
             padding: 35px;
@@ -123,6 +94,38 @@
             font-style: italic;
         }
 
+        .prototype-banner {
+            background-color: #feebc8;
+            border: 1px solid #fbd38d;
+            border-left: 6px solid #dd6b20;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .prototype-banner h3 {
+            margin: 0 0 10px 0;
+            color: #9c4221;
+            font-size: 20px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 12px;
+            font-size: 16px;
+        }
+
+        .btn-link:hover {
+            background-color: var(--primary);
+        }
+
         footer {
             text-align: center;
             font-size: 14px;
@@ -140,15 +143,9 @@
         <h1>Input og tanker til vores nye tidsregistrering</h1>
         <div class="intro-text">
             <p><strong>Hej Gustav,</strong></p>
-            <p>Det er et rigtig fint stykke arbejde, du har lavet!<br> Det er skønt at se, at der langt om længe er en god tidsregistreringsløsning på vej til os. <p>Tankerne bag systemet er super gode, og det flugter i høj grad med de principper og erfaringer, jeg selv har gjort mig og brugt i min egen tidsregistrering den seneste tid.</p>
+            <p>Det er et rigtig fint stykke arbejde, du har lavet! Det er skønt at se, at der langt om længe er en god tidsregistreringsløsning på vej til os.</p>
+            <p>Tankerne bag systemet er super gode, og det flugter i høj grad med de principper og erfaringer, jeg selv har gjort mig og brugt i min egen tidsregistrering den seneste tid.</p>
             <p>For at understøtte hverdagen bedst muligt for alle medarbejdere og skabe et så smidigt workflow som muligt, har jeg samlet en række tanker, erfaringer og konkrete forslag til tilføjelser nedenfor.</p>
-        </div>
-
-        <div class="prototype-banner">
-            <h3>Visualisering & Eksempel på løsning</h3>
-            <p>Jeg har opbygget et visuelt oplæg til, hvordan brugerfladen, overblikket og administrationen kan struktureres helt konkret. Det giver et hurtigt billede af principperne (dette er et oplæg og nogle elementer er endnu ikke i denne version):</p>
-            <!-- Erstat 'tidsreg_oplæg.html' med navnet på din html-prototype på GitHub -->
-            <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
         </div>
     </header>
 
@@ -222,9 +219,16 @@
     <!-- Sektion 5 -->
     <div class="section-card">
         <h2>5. Mindre, praktiske og tekniske justeringer</h2>
-        <p>Til sidst er der et par mindre tekniske og praktiske ting, som vil gøre oplevelsen helt skarp:</p>
-        <p><strong>Login & stempling:</strong> Det bør være lige så simpelt at logge ind, uanset om man er på kontoret eller arbejder ude. Det vigtigste er tidspunktet – lokation kan evt. tilføjes som en note. Ligeledes er det vigtigt at sikre, at systemet fungerer optimalt på mobil (f.eks. i Safari på iPhone), og at en standard "Glemt adgangskode"-funktion er tilgængelig, og ikke kun oprette ny adgangskode ved at indtaste den nuværende, da det er her, de fleste har brug for hjælp.</p>
+        <p>Til sidst er der et par mindre tekniske og praktiske ting, som vil gøre oplevelsen helt skarp i den endelige løsning:</p>
+        <p><strong>Login & stempling:</strong> Det bør være lige så simpelt at logge ind, uanset om man er på kontoret eller arbejder ude. Det vigtigste er tidspunktet – lokation kan evt. tilføjes som en note. Ligeledes er det vigtigt at sikre, at systemet fungerer optimalt på mobil (f.eks. i Safari på iPhone), og at en standard "Glemt adgangskode"-funktion er tilgængelig (og ikke kun oprettelse af ny kode ved at indtaste den nuværende), da det er her, de fleste har brug for hjælp.</p>
         <p><strong>Småkorrektioner:</strong> Spærretid på 3 minutter ved fejlstempling kan med fordel fjernes, stavefejlen på forsiden korrigeres ("Stempl" til "Stempel"), og popup-vinduer ved manuelle rettelser bør lukke automatisk efter indsendelse. Endelig bør reglerne for det automatiske frokostfradrag (30 min.) gøres helt konsekvente over hele linjen.</p>
+    </div>
+
+    <!-- Banner med link til interaktivt oplæg -->
+    <div class="prototype-banner">
+        <h3>Visualisering & Eksempel på løsning</h3>
+        <p>Jeg har opbygget et visuelt oplæg til, hvordan brugerfladen, overblikket og administrationen kan struktureres helt konkret. Det giver et hurtigt billede af principperne (dette er et oplæg, og nogle elementer er endnu ikke i denne version):</p>
+        <a href="tidsreg (35).html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
     </div>
 
     <footer>

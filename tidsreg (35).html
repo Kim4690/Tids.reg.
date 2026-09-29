@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tids.reg. af Kim Anker</title>
+<style>
+:root {
+  --bg:#f0eeea;--card:#fff;--ink:#141414;--muted:#777;--border:#e0ddd8;
+  --accent:#1a3a5c;--accent2:#2a6090;--yellow:#e8c84a;--red:#c0392b;--green:#1a6b3a;
+  --ff:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--ff);background:var(--bg);color:var(--ink);min-height:100vh;}
+/* ── AUTH ── */
+#auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:#1a3a5c;}
+.auth-top-logo{margin-bottom:28px;}
+.auth-odsgard-logo{height:36px;filter:brightness(0) invert(1);opacity:.9;}
+.auth-logo{font-size:32px;font-weight:800;color:var(--accent);letter-spacing:-1px;line-height:1;}
+.auth-logo-by{font-size:13px;color:var(--muted);font-weight:400;margin-top:2px;margin-bottom:0;}
+.auth-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.auth-divider{height:1px;background:var(--border);margin-bottom:20px;}
+.auth-card{background:var(--card);border-radius:16px;padding:32px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.auth-card h2{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--accent);}
+.auth-footer{margin-top:20px;font-size:11px;color:rgba(255,255,255,.35);text-align:center;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600;}
+.field input{width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:var(--ff);font-size:15px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s;}
+.field input:focus{border-color:var(--accent);}
+.btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:13px;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:background .15s;}
+.btn-primary:hover{background:var(--accent2);}
+.btn-primary:disabled{opacity:.5;cursor:default;}
+.auth-link{text-align:center;margin-top:16px;font-size:13px;color:var(--muted);}
+.auth-link a{color:var(--accent);cursor:pointer;text-decoration:none;font-weight:600;}
+.auth-err{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:16px;}
+/* ── APP SHELL ── */
+#app-screen{display:none;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--accent);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-logo{font-size:18px;font-weight:800;letter-spacing:-.5px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-user{font-size:12px;opacity:.75;}
+.btn-signout{background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:6px 12px;font-family:var(--ff);font-size:12px;cursor:pointer;}
+.tab-bar{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 16px;}
+.tab-btn{border:none;background:transparent;padding:13px 18px;font-family:var(--ff);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-btn.adm{color:#856404;}
+.tab-btn.adm.active{color:#5a3a00;border-bottom-color:#e8c84a;}
+.content{padding:20px;max-width:700px;margin:0 auto;width:100%;}
+/* ── CARDS ── */
+.section-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:18px;margin-bottom:12px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.card-title{font-size:15px;font-weight:700;}
+/* ── DAG-KORT ── */
+.day-grid{display:flex;flex-direction:column;gap:10px;}
+.day-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.day-card.today{border-color:var(--accent);border-width:2px;}
+.day-card.absent{background:#fdf6ee;border-color:#e0b870;}
+.day-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.day-name{font-weight:700;font-size:15px;}
+.day-date{font-size:12px;color:var(--muted);}
+.day-tag{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;}
+.day-tag.ferie{background:#fde8c8;color:#8a4a00;}
+.day-tag.syg{background:#fde8e8;color:#8a0000;}
+.day-tag.feriefri{background:#e8f4fd;color:#0a4a7a;}
+.day-tag.afspadsering{background:#e8fde8;color:#0a5a1a;}
+.day-tag.helligdag{background:#ede8fd;color:#3a0a7a;}
+.day-tag.p56{background:#fde8e8;color:#8a0000;border:2px solid #c82a2a;}
+.tag-chip.active-p56{background:#fde8e8;border-color:#c82a2a;color:#8a0000;font-weight:bold;}
+.topbar-flex{font-family:monospace;font-size:13px;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-weight:bold;}
+.topbar-flex.neg{color:#ff8888;}
+.halfday-row{display:flex;gap:8px;margin-top:8px;align-items:center;}
+.halfday-btn{border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-family:var(--ff);font-size:12px;cursor:pointer;background:var(--bg);}
+.halfday-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.afspad-time-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.afspad-label{font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px;}
+.day-tag.none{color:#bbb;font-weight:400;font-size:12px;}
+.times-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.time-field label{font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px;}
+.time-input{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-family:'Courier New',monospace;font-size:16px;background:var(--bg);color:var(--ink);outline:none;}
+.time-input:focus{border-color:var(--accent);}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tag-chip{border:1px solid var(--border);background:var(--bg);border-radius:20px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:var(--ff);}
+.tag-chip.active-ferie{background:#fde8c8;border-color:#c8882a;color:#8a4a00;font-weight:700;}
+.tag-chip.active-syg{background:#fde8e8;border-color:#c82a2a;color:#8a0000;font-weight:700;}
+.tag-chip.active-feriefri{background:#e8f4fd;border-color:#2a7abf;color:#0a4a7a;font-weight:700;}
+.tag-chip.active-afspadsering{background:#e8fde8;border-color:#2a8a3a;color:#0a5a1a;font-weight:700;}
+.tag-chip.active-helligdag{background:#ede8fd;border-color:#7a2abf;color:#3a0a7a;font-weight:700;}
+.stamp-row{display:flex;gap:8px;margin-top:8px;}
+.note-row{margin-top:8px;}
+.tid-idag-row{display:flex;align-items:center;gap:6px;margin-top:8px;padding:7px 10px;background:var(--bg);border-radius:7px;font-size:12px;flex-wrap:wrap;}
+.tid-label{color:var(--muted);font-weight:600;}
+.tid-val{font-family:monospace;font-weight:700;color:var(--ink);}
+.tid-diff.pos{color:var(--green);font-family:monospace;font-weight:700;}
+.tid-diff.neg{color:var(--red);font-family:monospace;font-weight:700;}
+.tid-sep{color:var(--border);margin:0 2px;}
+.note-input{width:100%;border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-family:var(--ff);font-size:13px;background:var(--bg);color:var(--ink);outline:none;}
+.note-input:focus{border-color:var(--accent);}
+.note-input::placeholder{color:#bbb;}
+.btn-stamp{flex:1;border:none;border-radius:7px;padding:10px;font-family:var(--ff);font-size:13px;font-weight:700;cursor:pointer;}
+.btn-stamp.start{background:var(--green);color:#fff;}
+.btn-stamp.slut{background:var(--accent);color:#fff;}
+.btn-stamp.set{background:#e8f5e9;color:#1a4a2a;font-weight:normal;}
+/* ── OVERSIGT ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.stat-val{font-size:32px;font-weight:800;color:var(--accent);letter-spacing:-1px;}
+.stat-val.warn{color:var(--red);}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-top:4px;}
+/* ── DOWNLOAD ── */
+.dl-form{display:flex;flex-direction:column;gap:12px;}
+.dl-table-header{display:grid;grid-template-columns:160px 110px 1fr 100px;gap:8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;padding:6px 0;border-bottom:2px solid var(--border);margin-bottom:4px;}
+.dl-table-row{display:grid;grid-template-columns:160px 110px 1fr 100px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f0;font-size:13px;}
+.dl-table-row:last-child{border-bottom:none;}
+.dl-dato{font-size:12px;color:var(--ink);}
+.dl-tider{font-family:monospace;font-size:12px;color:var(--muted);white-space:nowrap;}
+.dl-flex{font-family:monospace;font-size:12px;font-weight:700;text-align:right;}
+@media(max-width:580px){
+  .dl-table-header{grid-template-columns:1fr 80px;}.dl-table-header span:nth-child(2),.dl-table-header span:nth-child(3){display:none;}
+  .dl-table-row{grid-template-columns:1fr 80px;}.dl-tider,.dl-table-row span:nth-child(3){display:none;}
+}
+.dl-form select,.dl-form input[type=date]{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:var(--ff);font-size:14px;background:var(--bg);color:var(--ink);outline:none;}
+.btn-dl{background:var(--yellow);color:var(--ink);border:none;border-radius:8px;padding:12px;font-family:var(--ff);font-size:14px;font-weight:700;cursor:pointer;width:100%;}
+/* ── ADM ── */
+.emp-list{display:flex;flex-direction:column;gap:8px;}
+.emp-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}
+.emp-name{font-weight:700;font-size:14px;}
+.emp-email{font-size:12px;color:var(--muted);}
+.btn-sm{border:none;border-radius:6px;padding:7px 14px;font-family:var(--ff);font-size:12px;font-weight:700;cursor:pointer;}
+.btn-sm.primary{background:var(--accent);color:#fff;}
+.btn-sm.adm-btn{background:#faeeda;color:#854f0b;}
+.adm-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.adm-stat{background:var(--bg);border-radius:8px;padding:10px;text-align:center;}
+.adm-stat-val{font-size:20px;font-weight:800;color:var(--accent);}
+.adm-stat-lab{font-size:10px;color:var(--muted);}
+.emp-stats-row{display:flex;gap:8px;flex:1;}
+.emp-stat{background:var(--bg);border-radius:8px;padding:8px 14px;text-align:center;min-width:72px;}
+.emp-stat.neg .emp-stat-val{color:var(--red);}
+.emp-stat-val{font-size:16px;font-weight:800;color:var(--accent);white-space:nowrap;}
+.emp-stat-lab{font-size:10px;color:var(--muted);margin-top:2px;}
+.emp-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--card);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+.list-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px;}
+.list-item:last-child{border-bottom:none;}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.badge.ferie{background:#fde8c8;color:#8a4a00;}
+.badge.syg{background:#fde8e8;color:#8a0000;}
+.badge.afspad{background:#e8fde8;color:#0a5a1a;}
+.badge.ff{background:#e8f4fd;color:#0a4a7a;}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:16px;left:16px;max-width:400px;margin:0 auto;background:#1a4a2a;color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:999;text-align:center;}
+.toast.show{opacity:1;transform:translateY(0);}
+.loading{text-align:center;padding:40px;color:var(--muted);}
+/* Oversigt */
+.ov-card{cursor:pointer;text-align:center;transition:box-shadow .15s,transform .1s;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ov-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.12);transform:translateY(-2px);}
+.ov-icon{font-size:28px;margin-bottom:6px;}
+.ov-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;}
+.ov-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:40px;font-weight:800;color:var(--accent);letter-spacing:-2px;line-height:1;min-height:48px;display:flex;align-items:center;justify-content:center;}
+.ov-val.warn{color:var(--red);}
+.ov-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.ov-hint{font-size:10px;color:#bbb;margin-top:10px;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
+.dash-card.full{grid-column:1/-1;}
+.detail-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:16px;}
+.detail-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;color:var(--accent);}
+.detail-close{background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;color:var(--muted);}
+.detail-close:hover{border-color:var(--red);color:var(--red);}
+.detail-saldo-big{font-family:'Plus Jakarta Sans',sans-serif;font-size:56px;font-weight:800;color:var(--accent);letter-spacing:-2px;line-height:1;margin:8px 0 4px;}
+.detail-saldo-big.warn{color:var(--red);}
+.detail-saldo-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.detail-section{border-top:1px solid var(--border);padding-top:16px;margin-top:16px;}
+.detail-section-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px;}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f0;font-size:13px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-input{width:80px;font-family:'DM Mono',monospace;font-size:13px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;background:var(--bg);}
+.detail-input-date{font-family:'DM Mono',monospace;font-size:13px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;background:var(--bg);}
+.btn-ds{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;}
+.tl-row{display:grid;grid-template-columns:130px 100px 1fr 90px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #f5f5f0;font-size:12px;}
+.tl-row:last-child{border-bottom:none;}
+.tl-dato{color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;}
+.tl-badge{font-size:10px;font-weight:bold;padding:2px 8px;border-radius:20px;white-space:nowrap;text-align:center;}
+.tl-badge.optjening{background:#e8f5e9;color:#1b5e20;}.tl-badge.start{background:#ede8fd;color:#3a0a7a;}
+.tl-badge.tildelt{background:#e8f4fd;color:#0a4a7a;}.tl-badge.overfort{background:#fff3cd;color:#856404;}
+.tl-badge.afholdt-ferie{background:#fde8c8;color:#8a4a00;}.tl-badge.afholdt-feriefri{background:#e8f4fd;color:#0a4a7a;}
+.tl-badge.afholdt-afspad{background:#e8fde8;color:#0a5a1a;}.tl-badge.overtid{background:#e8f5e9;color:#1b5e20;}
+.tl-saldo{font-family:'DM Mono',monospace;font-weight:bold;text-align:right;}
+.tl-saldo.pos{color:var(--accent);}.tl-saldo.neg{color:var(--red);}
+.detail-empty{font-size:13px;color:#bbb;padding:16px 0;text-align:center;}
+.log-filter-btn{font-family:'DM Mono',monospace;font-size:11px;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);cursor:pointer;}
+.log-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:bold;}
+
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-top-logo">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALoAAAAkCAYAAAA+YiDCAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAEVRJREFUeNrcXAd4VFUWPjMJSUggCQESqnQFIgRRUJFVXFEECyhNxYaiYgdp9ooIoovosqy6FhQBFVfE7rpiRYqIdBsQ0UVpEYJgIGX2nJn/zpw8Z5j3Ju8Fds98f96bvFvevffcc0+5c31+8lOClMZoxWjAyGKUM35l/AD8L1MyowOjCSOJsZWxhrHLo/qyGS0Y9Rm1GftUX/7kcVt7MdYzvqf/Y/I5ZPSmjP7onBMZ6THSbWZ8xJgH7Hf4Xs8z2jL8YLTw+zICjN/AfJsYaxmLGCtd6I9mjFGM8xn1LM/K0ZYnGe+6UFdnRj/GnxknHCDdBvTlK4w3PeCB3Yz7GA8mkPcZxpGWcfKrifodYxnjvTgT9izGnbivYeVRRgmjmPEj4xvGKsZCxk7bb+q39+nMeJIRsOA3xveMFYyVjMIoabYy7mbU85Ptz9Yo5cTDWsZtjMMc1KM/1zBKVXl7GKvRtp8tdc1g1EqwnjMZb0d5/18ZX6M+qXdzlDTf4j2TE6zb+jkG5S5KMP9PDsbnUUZmjHJuTGC8ZXyeZ5xm503jSfQUxjTGMPW/BYxXGR9gxlqldRZmeU/GxYyW+P8exj2MyTbm33JGJ8ZfGXMgJQjSXGZ8JqMxozXjWEY3lbeCMZVxkwPJdDPjAdx/xbgN7fxdpclnDIXEJ0iobpAydigffXmS+p/042uMT6CmlFvy5DGOYvRhXMbIwP8LGaMh5atC8yFNhdoz1jnMv4TRhfE4VmEfUAMqrZR5NtRAoS2M3hhfTdK2pyCth1lWbz/U5FxGc6yE3aHmGRLpPoKxNBGJ3hnS2sygtxjHy5M0o8b6chh1cTX3dYK5k/1JppzzGKtUOfNtzMDlSHuhTcnSkjHOIgWXMZrayNtF5XnVRvoCxjakF4mWayPP5RZpJJKonUPpmc24mVGiyplUBWle1/JOf0+gjCXIOyxOuoFY/QN4/xzL88vw7FOb9dZgnM1419KGUbFyxCroVJV5O2OQ/DfLZ+ym2kGGrsffOzaoS92b59LxzXIpP68OJl/ouUyG9MhkmqTKFEbOs8HoIx12fDpjiqpnp5mcB/isUe9k99Na1TE4TtpbLKrHKVVUN0Q1e1OV+UyC5dxlYZK9jJoJMvrNNtIeyShH+pkxGP2LBNpxBlS+A07+eEy+UHTrtLDVmRmU2r1bNaC7C1rR/PbtaHnHjmEs7dCBZuUfQWM7taHuLXJDWgxLepkgaaGyuzKKlO6e4zKja92zSLUjlvTsptK0dFjHAMaEOMwxQZU/10Xd2qrXLkgg/07klYn4Ce6v85DR5TNEvXMLlxhdPqKCP6fKnh6F1StRS1jIQh+KDppFFdtLWDrv5aTdWtSk6fk5NCEjl/oGMqhpcmUDOdnno3ZJqXR+RU16rHYDur1TfapDRbQrkMRmcwrVoool0KnLoWO945E36QtGV9gFxq5IjpKuN65fw7vhhOYybrXo8Va98xbcz2AMYJS52EaxQ4bjvgf0ZLvUDbYUwTYxuv4FHnv5XlA2zWAXyw3AHnwU34dDZ1cqemUyTC5+1ZOz2a77VfTuQIAuyG9B02rn0XH+mtZKasHf3AjGa5j6V6TT3Px86tVKPHWlVMx9y8z+nTLIuiTo1rJD38NoMUbd3ChpWisD1E3Kg3FlBMalHrVRmHsi7q9knGMz3/W4zlZGsdDxcLF6SS+rsXebbmS8gfsp4Ms/MPpoBICETmWGpCJhcqZJHevTmKQMXaAENcYyPsUMNUGiH+FFuNAkzGGjdGJGHl1ZIEXvZWbP4NlQ8Rl/OQ9JxqCDvaCvYPUL9WUMsjyvjetOl+t9UZV7useMI6vGx/C1L7ORvr7q+3txlbF7W5XnJa3G9TCPyj8b3h09kcOMLir4JNzfwYy4sZhYcgd207iCHDqNKknxoZCWkxDoyEY5yXABnQ1XkzBZR5Pp6kAaDW7fJMjsKf4wM3yGx0972LGvww1GcFdqMpHOFi7W10OtWIMRPPGaTkK9m2ykHa6EwNfq/5PV+CZ7+K6mP1I9Kj+AgB9hRf+TZvSxuJeZMD7VFwoEntu2EZ1XUYnJJ4Epc21UWMBYgUhqyFmdXJsKGuZQcUW2qDCkfNJtEWn1iq5R0kzXswjXE1wc3IeVXfDeIRgNv17p5mSJjxRC/bzEw/ob4lrsYR0LsMoJTSAVuh2lpDmLuRxqmeXjL5k6852YEE5JdOMzzJcROfXQyqAfZzGCJcZ484qWYWnXEk3oWUiAWi6F1zsDenIdSjQIk12M9JeiPJ+G620evoNxAHzrcVtHKaneWhj9FAy0eEJmEuvUFNhFF7VoqjN1RFQzUZpjbjolpbJxmhoMfKWEpLrp3HM9bvgTSocz0nu3isSdRqG9LDWrUIdZMjda1IJDTZq/GuP5K0qV88JYbAR+o2pY7b5Qunp/vzKWJCz7e0kgm1pl+6lfRbrVuq8KyUS6ynw5NSMzyGslIX57C5NMDMNOHjbcuDIzLIP4tPJciMG6zoH3wko9LXUdSpStvFBTYqTZqFbYIR68wxyltvyzGtr8Ka4nCqN3raSvBkromIZNdGLZp3CcC5WOMzensNBsnVPKQj3LSNUlSlf2iopgMwgdE8VzcT4GuhkG4WuqvMcnHmXBLhH61yHI6DcoNe7LA6S7G1dxV9awWXaFjTQvGMMQK8v+amT0oOrSHF/WmnfOS6nUvm4uVSrLodngRYdlsZAPhPtnFa6tHHRcIrQG1+YxpE0bCgWBJLBzBIW25ApTDLRpZPlw/80hrLbEi1vIZr1foMLZDSDFMizrYGVYocoSb9tz1dRmYwfUFUbPwZctFUHbNJUyfZX4LM/Fitubm7pp6aQ26xldqp7HjL5VDUA0Koc3Qny8j1BoH/RRMNzeV/plNKqt7rcfYkx+BvpW3Kkv20j/F1zHxEkXwPUmGPNvADJZ5PcBO4J2X8TNLJPsvGpstxmHTL1hvjT41+cjf6BSYjf9neGoU0ZSsuqnsG+1hscNL8U1nivxZ8ZIqDFTwxpXiNlFxesVJY8u0w3feQ1MnkRgjXjfoxg4YKPuaVAtZGuxnWCerIR9MKEEJ0PllRVuA4RGW62+VhOZLRdJfjX4IYZmdaLc59OJ97pYcTgCuausTK30YU+HYRCfRw1PsXSAnRVgBFQu47U5FsbmixYprveSp7nwrldAJbALkdb/Adqocg5nHI37GTbrljE3kdLRB0hnxmmisgFkNRYXbg9GO6ijIw+SOmcEZ5lfLeeN/cF3LKWdgUoCwc3fLIZ/7rZtH/elLywEjfX7C65+jxreyFTvMN9GeI2OUq65QWhPXXzf7bK6l+IwvU9JdL0y3qTcbU5+y2smtrh969tw5T3G+DfGThwcH9HBd7E2MALWr2ZaZzMJftijx8w1D8IiqAS0rbyMFm7crlfRY3Fd57FE72IxUpzSVxj4IcqoXYj7DUqqd3DhXZ+ErdDEBmQC94thHJp9RyMd1v+W8lLF06vb4doHq/ZlFHHZHkwy7uotyZiNp4eZgKXs4sLNtL9dXUoJqTCbIcXOqWKlZi8NfVxjP68dqWwLBLea1If+JvSZh41uqrwtS6tY1iyoCm9ANbgWeu0qdO6JcKdVhfZQZJuxHdqm1L9tivGMXfQApK3d1fJ35RwYCokdTxcWvf58qD3jYPguO4iMbuyL9dLo+WpW1k8L7KBtZUk0x1+iM9zggptnXniJKCoOqrGIjJodhTKhvDxy4Vyld7txYoB4GcwmsbtxNczd6yAO6gaK7JHXxp8Ei8RVfJxNiEHZGHlFZSuw+R7vUGQ7xayDLNFNn7ybDOm2HkaD6HO3kC+bpqwsopPb51LTpBpGTz+dEov4yYw51XyZ59tLizdtk99l8/T3axfWTI8bPdKhQWaHhMGvg+TLhtSbDG9NFxdWDieUj+uXyhNiNrBJHODXBMuV/U2yPeIOCv14xA6dhVXlcPTJ9QeByWVlMZu1ZicrtUKMjxHMfHfkBHaUFbFNM353ET2eHbar5CyTyynygwI79DM6Kbh9dAvr5vesLQr+vC6Niqgk4OtLkY3+Xs7+/qoeNxl9Bwa0PqSgCIKPwWAPUeVf/HtNp6mVRmiU+j63CuVugUomfZhF9g5xEuNLxvZTCIK5FNlUV110H66iPu3yK8NnK9xij+9kSZvu+42WbNpOk8srqYlPYxDjvXQF3G8SIAputC8PBGj0dub7wD7iiSRMLv82UboPlOHjBZkAiNSxxuWyjeFc07JynAgduTpoANQM6feXoIcPxbNHqlj2auU9Ge4gn9hbfzMLOcU+7MoLuo4iUfbbrW68i3EVi/msioBMylSatWYrTSyr5IWRTT89sDTfBx1flujPMXNFn28BS32n8bIM2VxIq7fsoyzfHtoZqnYqljazzHhFD1Lk1yy6HmHMWlUsu6Ey2AqV6vAk7sWIz/F4UP2qvvvh+ZF9KimQvu+7UIf5Ycxoh/nESP8Fat3MamLyw5Xh/KjxsGlGF9VkAe7nsApTLzMYN/DRi2sL6ZriLbS5vFKcRbw1d2KJ6gpDZyAqCf/S5SO2iwauWUff7KhgJt9L+3zBQOylysC9iiK+fLdpsLIBxOtg3JfiHtxIkS3CiVIv5SFZbZEo5WC21z0e2NfASMLUd+F/l6qV2g16FleZ1Mc4zGsOSBKvXe9qYHSjupXqiWl1NZ0BJpVlZulv5G+WRsWszwTo88IiumjNWprtL6Gfykvj1rayfB9NKd9LI1bt4BHIZrG2h3YH/LS/IiD+3meUXv6ERw2WCThHqUa3qmcyYHlYxRpVoY6bVTt0p+xXaks3l+0CTWL4nqkmryzDzSkSl5jqUj3bKBIou9ZhXhGI43EvK35tj/pCIvuyx9384L1PpTGJcYLTZnW+XfBsu+D6K6dxsT0iO2QGtGtOYwva0CMd2tDz+UfQc+2PoAf5+42Mni1zcYBRRvCaE6lnrDp7410PDjAyn1GqnnUx0izF85UJ1vGwqiPWYUz9VBo537ChS2e6yKld81TZN6lnj+N/r7t4hox8Oqr6alr60M65LouR9vMoz6p6rksnxnr1fv3sntTV1HKA5O3mKLpgpuDpAJkhIzx8n4mJkBFaSZnBJT2OppMBfsNymA95wOj5jHcszJVxgLQm3QsO6xkeg8mifQartHKoUt8qMpwM4i+qzJGWo9r24//dXWZ0wkGuUvbV+L7MAaPr082GusToPrQ/EO/ktHhS4zXLcWqXQOLj7KPkCGMHkW4toy1O0tXnBU52cPbiIBtpG+FYshmWBv/DRt5bLSfkNomTvg7jXpXnNZsD0tNyjuWbOJrOZzN/EqO3RVjISVsXWdJdgWffecDkhPoCaIt8PnB4Utft6vzFelEY/WObxw52gnaw0cKfPRM9TddELqcoXbYU/mLZwLMcwSTxroiVWRc60tEIEulfDC1ApM5OEMWcpisG8iLLs2R4MhohKNI+ilvrLryfHRKX2XTl/30K+ug6tEuWq7bQhYdSJKT+sEMvhB+6qj435UfolR+hPvFZ74Y3SGwIOZX4TwjWNVb5piOAs8NSRyHiBSNc1M+t9Dvc0MehP65Cm+zubVkAr90KiuxFGQbD+ecYNlsW7KqWCIxlqWf70K/j4/S+rU8qlogNCZxj/RnjggTPBbSLXYyXcMJqIp/u0OXt1CW64DlVkIrtoUdXOGxjGc4XPDpGuZeqtE08kugEtdOcR78C9w85yJ+l3vNl/O+6BPhK1JwxcQ6rdSTRrSTSpScse5EeshXSbAsVf6Tsh94Av/p8+uNZ2HbofvjiA1GCM+WQKlshEdegjj0uSKshCL4UwPcuq1QZPFGyc/EVFyO4DbBK9IDkbmrxuW9HvSLpP4SbckuclelkRDHHe+i+OxIeLBmHYrzzbIrsmbJDAxFpTYd3rABbDWL9KGQ/tjDIfqjv0EZHZ2X+V4ABAL7GD2jCsUR2AAAAAElFTkSuQmCC" alt="Odsgard" class="auth-odsgard-logo">
+  </div>
+  <div class="auth-card" id="login-card">
+    <div class="auth-card-header">
+      <div>
+        <div class="auth-logo">Tids.reg.</div>
+        <div class="auth-logo-by">af Kim Anker</div>
+      </div>
+    </div>
+    <div class="auth-divider"></div>
+    <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="din@email.dk" autocomplete="email"></div>
+    <div class="field"><label>Adgangskode</label><input type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Log ind</button>
+    <div class="auth-err" id="login-err"></div>
+    <div class="auth-link"><a onclick="showForgot()">Glemt adgangskode?</a></div>
+  </div>
+  <div class="auth-card" id="forgot-card" style="display:none">
+    <div class="auth-card-header">
+      <div>
+        <div class="auth-logo">Tids.reg.</div>
+        <div class="auth-logo-by">af Kim Anker</div>
+      </div>
+    </div>
+    <div class="auth-divider"></div>
+    <h2 style="font-size:16px;margin-bottom:16px;color:var(--accent)">Nulstil adgangskode</h2>
+    <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="din@email.dk"></div>
+    <button class="btn-primary" onclick="doForgot()">Send nulstillings-email</button>
+    <div class="auth-err" id="forgot-err"></div>
+    <div class="auth-link"><a onclick="showLogin()">Tilbage til log ind</a></div>
+  </div>
+  <div class="auth-footer">Odsgard A/S · Naverland 8 · Glostrup</div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-logo">Tids.reg. <span style="font-weight:400;font-size:13px;opacity:.7">af Kim Anker</span></div>
+    <div class="topbar-right">
+      <div class="topbar-flex" id="topbar-flex" style="display:none">Flex: —</div>
+      <div class="topbar-user" id="topbar-email"></div>
+      <button class="btn-signout" onclick="showChangePw()" style="background:rgba(255,255,255,.1)">Skift kode</button>
+      <button class="btn-signout" onclick="doSignout()">Log ud</button>
+    </div>
+  </div>
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('uge')">Ugeskema</button>
+    <button class="tab-btn" onclick="switchTab('oversigt')">Oversigt</button>
+    <button class="tab-btn" onclick="switchTab('download')">Download & mdr. oversigt</button>
+    <button class="tab-btn adm" id="adm-tab" onclick="switchTab('adm')" style="display:none">Admin</button>
+  </div>
+
+  <!-- UGE -->
+  <div class="content" id="tab-uge">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="changeWeek(-1)">← Forrige</button>
+      <div style="flex:1;font-weight:700;font-size:15px;text-align:center" id="week-label"></div>
+      <button class="btn-sm primary" id="next-btn" onclick="changeWeek(1)" style="display:none">Næste →</button>
+      <button class="btn-sm" id="today-btn" onclick="goToday()" style="display:none;background:var(--accent);color:#fff">I dag</button>
+    </div>
+    <div class="day-grid" id="day-grid"></div>
+  </div>
+
+  <!-- OVERSIGT -->
+  <div class="content" id="tab-oversigt" style="display:none">
+  <h1>Oversigt</h1>
+  <div class="subtitle" id="ov-subtitle">Klik pa et kort for detaljer</div>
+  <div class="dash-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;max-width:860px">
+    <div class="dash-card ov-card" onclick="openDetail('ferie')">
+      <div class="ov-icon">&#127958;</div><div class="ov-label">Feriedage tilbage</div>
+      <div class="ov-val" id="ov-ferie">-</div><div class="ov-sub" id="ov-ferie-frist"></div>
+      <div class="ov-hint">Klik for detaljer</div>
+    </div>
+    <div class="dash-card ov-card" onclick="openDetail('feriefri')">
+      <div class="ov-icon">&#128197;</div><div class="ov-label">Feriefridage tilbage</div>
+      <div class="ov-val" id="ov-feriefri">-</div><div class="ov-sub" id="ov-feriefri-frist"></div>
+      <div class="ov-hint">Klik for detaljer</div>
+    </div>
+    <div class="dash-card ov-card" onclick="openDetail('afspad')">
+      <div class="ov-icon">&#128564;</div><div class="ov-label">Afspadsering til gode</div>
+      <div class="ov-val" id="ov-afspad">-</div><div class="ov-sub">timer</div>
+      <div class="ov-hint">Klik for detaljer</div>
+    </div>
+    <div class="dash-card ov-card" onclick="openDetail('syg')">
+      <div class="ov-icon">&#129298;</div><div class="ov-label">Sygedage i år</div>
+      <div class="ov-val" id="ov-syg">0</div><div class="ov-sub">dage</div>
+      <div class="ov-hint">Klik for detaljer</div>
+    </div>
+  </div>
+  
+  <div class="detail-panel" id="detail-ferie" style="display:none">
+    <div class="detail-header"><span>Feriedage</span><button class="detail-close" onclick="closeDetail()">Luk</button></div>
+    <div class="detail-saldo-big" id="dt-ferie-tilbage">-</div>
+    <div class="detail-saldo-sub" id="dt-ferie-sub">dage tilbage</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="ferie-aar-btns"></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Startbalance og periode</div>
+      <div class="detail-row"><span>Optjeningsår</span><strong id="dt-ferie-optaar">-</strong></div>
+      <div class="detail-row"><span>Afholdelsesperiode</span><strong id="dt-ferie-afhper">-</strong></div>
+      <div class="detail-row"><span>Startbalance (dage)</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="ferie-sept-input" class="detail-input" step="0.01" min="0" placeholder="18.72">
+          <button class="btn-ds" onclick="saveFerieStart()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Startbalance fra dato</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="date" id="ferie-dato-input" class="detail-input-date">
+          <button class="btn-ds" onclick="saveFerieStart()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Overført fra forrige ferieår</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="ferie-overfort-input" class="detail-input" step="0.01" min="0" placeholder="0">
+          <button class="btn-ds" onclick="saveFerieOverfort()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Optjening siden startdato</span><strong id="dt-ferie-optjent">-</strong></div>
+      <div class="detail-row"><span>Afholdt</span><strong id="dt-ferie-brugt">-</strong></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Tidslinje (nyeste overst)</div>
+      <div id="dt-ferie-tl"></div>
+    </div>
+  </div>
+  
+  <div class="detail-panel" id="detail-feriefri" style="display:none">
+    <div class="detail-header"><span>Feriefridage</span><button class="detail-close" onclick="closeDetail()">Luk</button></div>
+    <div class="detail-saldo-big" id="dt-ff-tilbage">-</div>
+    <div class="detail-saldo-sub" id="dt-ff-sub">feriefridage tilbage</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="ff-aar-btns"></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Periode og saldo</div>
+      <div class="detail-row"><span>Afholdelsesperiode</span><strong id="dt-ff-per">-</strong></div>
+      <div class="detail-row"><span>Næste tildeling</span><strong id="dt-ff-naeste">-</strong></div>
+      <div class="detail-row"><span>Tildelt denne periode</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="ff-tildelt-input" class="detail-input" step="1" min="0" placeholder="5">
+          <button class="btn-ds" onclick="saveFfTildelt()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Overført fra forrige periode</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="ff-overfort-input" class="detail-input" step="0.5" min="0" placeholder="0">
+          <button class="btn-ds" onclick="saveFfOverfort()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Afholdt denne periode</span><strong id="dt-ff-brugt">-</strong></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Tidslinje (nyeste overst)</div>
+      <div id="dt-ff-tl"></div>
+    </div>
+  </div>
+  
+  <div class="detail-panel" id="detail-afspad" style="display:none">
+    <div class="detail-header"><span>Afspadsering</span><button class="detail-close" onclick="closeDetail()">Luk</button></div>
+    <div class="detail-saldo-big" id="dt-af-saldo">-</div>
+    <div class="detail-saldo-sub">timer til gode</div>
+    <div class="detail-section">
+      <div class="detail-section-title">Saldo</div>
+      <div class="detail-row"><span>Startsaldo (timer)</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="af-start-input" class="detail-input" step="0.25" min="0" placeholder="0">
+          <button class="btn-ds" onclick="saveAfStart()">Gem</button>
+        </div>
+      </div>
+      <div class="detail-row"><span>Optjent overtid</span><strong id="dt-af-optjent">-</strong></div>
+      <div class="detail-row"><span>Afspadseret</span><strong id="dt-af-brugt">-</strong></div>
+      <div class="detail-row"><span>Normtid</span><strong>Man-tor: 7t 30m - Fre: 7t 00m</strong></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Tidslinje (nyeste overst)</div>
+      <div id="dt-af-tl"></div>
+    </div>
+  </div>
+  
+  <div class="detail-panel" id="detail-syg" style="display:none">
+    <div class="detail-header"><span>Sygedage <span id="dt-syg-aar"></span></span><button class="detail-close" onclick="closeDetail()">Luk</button></div>
+    <div class="detail-saldo-big" id="dt-syg-antal">0</div>
+    <div class="detail-saldo-sub">sygedage i kalenderaret</div>
+    <div class="detail-section">
+      <div class="detail-section-title">Sygedage dette kalenderaar</div>
+      <div id="dt-syg-liste"></div>
+    </div>
+  </div>
+  </div><!-- end tab-oversigt -->
+
+    <!-- DOWNLOAD & MDR OVERSIGT -->
+  <div class="content" id="tab-download" style="display:none">
+
+    <!-- Månedsoversigt -->
+    <div class="section-title">Månedsoversigt</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="changeMonth(-1)">← Forrige</button>
+      <div id="month-label" style="flex:1;text-align:center;font-weight:700;font-size:16px;color:var(--accent)"></div>
+      <button class="btn-sm primary" id="month-next-btn" onclick="changeMonth(1)">Næste →</button>
+    </div>
+    <div id="month-preview" style="margin-bottom:20px"></div>
+    <button class="btn-dl" onclick="doMonthDownload()" id="month-dl-btn" style="display:none;margin-bottom:24px">Download Excel — denne måned</button>
+
+    <!-- Brugerdefineret rapport -->
+    <div class="section-title" style="margin-top:8px">Rapport på bestemt kategori eller periode</div>
+    <div class="card dl-form">
+      <div>
+        <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Kategori</label>
+        <select id="dl-kat" onchange="renderDlPreview()">
+          <option value="alt">Alt (flex, ferie, feriefridage, sygedage)</option>
+          <option value="ferie">Feriedage</option>
+          <option value="feriefri">Feriefridage</option>
+          <option value="afspadsering">Afspadsering / Flex</option>
+          <option value="syg">Sygedage</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Fra dato</label>
+        <input type="date" id="dl-fra" onchange="renderDlPreview()">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Til dato</label>
+        <input type="date" id="dl-til" onchange="renderDlPreview()">
+      </div>
+    </div>
+    <div id="dl-preview" style="margin-bottom:12px"></div>
+    <button class="btn-dl" onclick="doDownload()" id="dl-btn" style="display:none">Download Excel</button>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="content" id="tab-adm" style="display:none">
+    <div class="section-title">Medarbejdere</div>
+    <div class="emp-list" id="emp-list"><div class="loading">Henter...</div></div>
+    <div style="margin-top:20px">
+      <div class="section-title">Download medarbejderrapport</div>
+      <div class="card dl-form">
+        <div>
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Medarbejder</label>
+          <select id="adm-emp" onchange="renderAdmPreview()"></select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Kategori</label>
+          <select id="adm-kat" onchange="renderAdmPreview()">
+            <option value="alt">Alt</option>
+            <option value="ferie">Feriedage</option>
+            <option value="feriefri">Feriefridage</option>
+            <option value="afspadsering">Flex / Afspadsering</option>
+            <option value="syg">Sygedage</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Fra dato</label>
+          <input type="date" id="adm-fra" onchange="renderAdmPreview()">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px">Til dato</label>
+          <input type="date" id="adm-til" onchange="renderAdmPreview()">
+        </div>
+      </div>
+      <div id="adm-dl-preview" style="margin-top:12px"></div>
+      <button class="btn-dl" onclick="doAdmDownload()" id="adm-dl-btn" style="margin-top:12px;display:none">Download Excel</button>
+      <div style="margin-top:24px">
+        <div class="section-title">Ændringslog</div>
+        <div id="adm-changelog" style="font-size:13px;color:var(--muted);text-align:center;padding:16px">Vælg en medarbejder for at se ændringslog</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Medarbejder detaljer -->
+<div class="modal-overlay" id="emp-modal">
+  <div class="modal-box">
+    <div class="modal-title"><span id="modal-name">Medarbejder</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="adm-stats" id="modal-stats"></div>
+    <div style="margin-top:16px;font-size:13px;font-weight:700;color:var(--muted)">Seneste registreringer</div>
+    <div id="modal-list"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="changepw-modal">
+  <div class="modal-box" style="border-radius:16px;margin:20px">
+    <div class="modal-title">
+      <span>Skift adgangskode</span>
+      <button class="modal-close" onclick="closeChangePw()">✕</button>
+    </div>
+    <div class="field">
+      <label>Ny adgangskode</label>
+      <input type="password" id="new-pw1" placeholder="Mindst 6 tegn" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:var(--ff);font-size:15px;background:var(--bg);outline:none">
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>Gentag ny adgangskode</label>
+      <input type="password" id="new-pw2" placeholder="Gentag adgangskode" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:var(--ff);font-size:15px;background:var(--bg);outline:none">
+    </div>
+    <div id="changepw-err" style="font-size:12px;color:var(--red);min-height:16px;margin-top:8px;text-align:center"></div>
+    <button onclick="doChangePw()" style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:13px;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;margin-top:12px">Gem ny adgangskode</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+// Firebase loaded via compat CDN scripts above
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-OQ8CEvIHXg1bInDESEEhoARmlkDnDos",
+  authDomain: "tidsreg-6af7c.firebaseapp.com",
+  projectId: "tidsreg-6af7c",
+  storageBucket: "tidsreg-6af7c.firebasestorage.app",
+  messagingSenderId: "640398746809",
+  appId: "1:640398746809:web:fbb4b89596cc1cf94da768"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Compat function wrappers
+function signInWithEmailAndPassword(a, email, pw){ return a.signInWithEmailAndPassword(email, pw); }
+function signOut(a){ return a.signOut(); }
+function sendPasswordResetEmail(a, email){ return a.sendPasswordResetEmail(email); }
+function onAuthStateChanged(a, cb){ return a.onAuthStateChanged(cb); }
+function updatePassword(user, pw){ return user.updatePassword(pw); }
+
+// ── Fiktive testbrugere (simuleret) ──────────────────────────────────────────
+const DEMO_USERS = {
+  'kim@odsgard.dk':    { name:'Kim Anker',       isAdmin:true  },
+  'michael@odsgard.dk':{ name:'Michael Staal',   isAdmin:false },
+  'pia@odsgard.dk':    { name:'Pia Barfod',       isAdmin:false },
+  'jan@odsgard.dk':    { name:'Jan Brolykke',     isAdmin:false },
+};
+
+// ── Fiktive data ──────────────────────────────────────────────────────────────
+const TODAY = new Date(2026, 8, 29); // 29. sep 2026
+function isoDate(d){ return d.toISOString().slice(0,10); }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+
+function seededRandom(seed) {
+  let h = 5381;
+  for(let i=0;i<seed.length;i++) h = ((h<<5)+h)^seed.charCodeAt(i);
+  return function(){
+    h ^= h << 13; h ^= h >> 17; h ^= h << 5;
+    return (h>>>0)/4294967296;
+  };
+}
+
+function genFakeData(email) {
+  const rand = seededRandom(email);
+  const days = {};
+  // Generate from 1 aug 2026 to today
+  const base = new Date(2026, 7, 1); // 1. aug 2026
+  const today = new Date();
+  const absenceTags = ['syg','feriefri','ferie','afspadsering'];
+  // 70% arbejde, 30% absence
+  const tagPool = [null,null,null,null,null,null,null,'ferie','syg','feriefri','afspadsering'];
+
+  for(let i=0; i<100; i++){
+    const d = new Date(base);
+    d.setDate(base.getDate()+i);
+    if(d > today) break;
+    if(d.getDay()===0||d.getDay()===6) continue; // skip weekends
+    const ds = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const isFri = d.getDay()===5;
+    const tag = tagPool[Math.floor(rand()*tagPool.length)];
+    const isAbsence = tag && absenceTags.includes(tag);
+    // Realistic start: 7:00-9:00, end: normtid + variation
+    const startH = 7 + Math.floor(rand()*2);
+    const startM = [0,15,30,45][Math.floor(rand()*4)];
+    const normEnd = (startH*60+startM) + (isFri?420:450) + 30; // +30 for lunch
+    const variation = Math.floor((rand()-0.4)*90); // mostly slight overtime
+    const endMins = normEnd + variation;
+    const endH = Math.floor(endMins/60);
+    const endM = endMins%60;
+    days[ds] = {
+      tag: tag,
+      start: isAbsence ? null : String(startH).padStart(2,'0')+':'+String(startM).padStart(2,'0'),
+      end:   isAbsence ? null : String(endH).padStart(2,'0')+':'+String(Math.max(0,endM)).padStart(2,'0'),
+    };
+  }
+  return days;
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let currentUser = null, currentProfile = null, weekOffset = 0;
+let fakeData = {}, empDataCache = {};
+
+// ── Auth state ────────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async function(user) {
+  if(user) {
+    currentUser = user;
+    const profile = DEMO_USERS[user.email] || { name: user.email, isAdmin: false };
+    currentProfile = profile;
+    // Cache all fake data once at login so stats are consistent everywhere
+    fakeData = genFakeData(user.email);
+    // Pre-generate and cache all employee data
+    empDataCache = {};
+    Object.keys(DEMO_USERS).forEach(email => { empDataCache[email] = genFakeData(email); });
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    document.getElementById('app-screen').style.flexDirection = 'column';
+    document.getElementById('topbar-email').textContent = profile.name;
+    if(profile.isAdmin) document.getElementById('adm-tab').style.display = '';
+    switchTab('uge');
+    renderWeek();
+    updateTopbarFlex();
+    // renderOversigt replaced by renderDashboard
+  } else {
+    currentUser = null;
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app-screen').style.display = 'none';
+  }
+});
+
+// ── Auth functions ─────────────────────────────────────────────────────────────
+window.doLogin = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  btn.disabled = true; btn.textContent = 'Logger ind...';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    const msgs = { 'auth/user-not-found':'Brugeren findes ikke.', 'auth/wrong-password':'Forkert adgangskode.', 'auth/invalid-email':'Ugyldig email.', 'auth/invalid-credential':'Forkert email eller adgangskode.' };
+    err.textContent = msgs[e.code] || 'Fejl: ' + e.message;
+    btn.disabled = false; btn.textContent = 'Log ind';
+  }
+};
+
+window.doForgot = async function() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const err = document.getElementById('forgot-err');
+  err.textContent = '';
+  if(!email){ err.textContent = 'Indtast din email.'; return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    err.style.color = 'green';
+    err.style.color = 'green';
+    err.textContent = 'Email sendt! Tjek indbakke og spam-mappe.';
+  } catch(e) {
+    err.style.color = 'var(--red)';
+    err.textContent = 'Kunne ikke sende email. Tjek at adressen er rigtig.';
+  }
+};
+
+window.doSignout = async function() {
+  await signOut(auth);
+};
+
+window.showChangePw = function() {
+  document.getElementById('new-pw1').value = '';
+  document.getElementById('new-pw2').value = '';
+  document.getElementById('changepw-err').textContent = '';
+  document.getElementById('changepw-modal').classList.add('open');
+};
+
+window.closeChangePw = function() {
+  document.getElementById('changepw-modal').classList.remove('open');
+};
+
+window.doChangePw = async function() {
+  const pw1 = document.getElementById('new-pw1').value;
+  const pw2 = document.getElementById('new-pw2').value;
+  const err = document.getElementById('changepw-err');
+  err.textContent = '';
+
+  if(pw1.length < 6){
+    err.textContent = 'Adgangskoden skal være mindst 6 tegn.';
+    return;
+  }
+  if(pw1 !== pw2){
+    err.textContent = 'Adgangskoderne er ikke ens.';
+    return;
+  }
+  try {
+    await updatePassword(auth.currentUser, pw1);
+    closeChangePw();
+    showToast('✓ Adgangskode skiftet!');
+  } catch(e) {
+    if(e.code === 'auth/requires-recent-login'){
+      err.textContent = 'Log ud og ind igen, og skift derefter adgangskoden.';
+    } else {
+      err.textContent = 'Fejl: ' + e.message;
+    }
+  }
+};
+
+window.showForgot = function() {
+  document.getElementById('login-card').style.display = 'none';
+  document.getElementById('forgot-card').style.display = '';
+};
+window.showLogin = function() {
+  document.getElementById('forgot-card').style.display = 'none';
+  document.getElementById('login-card').style.display = '';
+};
+
+// ── Tab switching ──────────────────────────────────────────────────────────────
+window.switchTab = function(name) {
+  ['uge','oversigt','download','adm'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name?'':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.tab-btn[onclick*="'${name}'"]`);
+  if(btn) btn.classList.add('active');
+  if(name==='adm') renderAdm();
+  if(name==='oversigt'){renderDashboard();}
+  if(name==='download'){ monthOffset=0; renderMonthView(); document.getElementById('dl-preview').innerHTML=''; document.getElementById('dl-btn').style.display='none'; }
+  if(name==='oversigt') renderDashboard();
+};
+
+// ── Week navigation ────────────────────────────────────────────────────────────
+const DAYS = ['Mandag','Tirsdag','Onsdag','Torsdag','Fredag'];
+const TAG_LABELS = { ferie:'Ferie', syg:'Syg', p56:'§56 Syg', feriefri:'Feriefridag', afspadsering:'Afspadsering', helligdag:'Helligdag' };
+
+function getMonday(d){ const day=d.getDay(), diff=day===0?-6:1-day; const m=new Date(d); m.setDate(d.getDate()+diff); m.setHours(0,0,0,0); return m; }
+function getWeekNum(d){ const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const dn=date.getUTCDay()||7; date.setUTCDate(date.getUTCDate()+4-dn); const y=new Date(Date.UTC(date.getUTCFullYear(),0,1)); return Math.ceil((((date-y)/86400000)+1)/7); }
+function viewMonday(){ return getMonday(addDays(TODAY, weekOffset*7)); }
+function fmtDato(d){ return d.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+function fmtShort(d){ return d.toLocaleDateString('da-DK',{day:'numeric',month:'short'}); }
+const NORM_MANS=7*60+30, NORM_FRE=7*60, FROKOST=30, FERIE_OPT=2.08;
+function normMins(d){return d.getDay()===5?NORM_FRE:NORM_MANS;}
+function pad(n){ return String(n).padStart(2,'0'); }
+function toMins(t){ if(!t) return null; const[h,m]=t.split(':').map(Number); return h*60+m; }
+
+window.changeWeek = function(dir) {
+  if(weekOffset+dir>0) return;
+  weekOffset+=dir;
+  renderWeek();
+};
+window.goToday = function() { weekOffset=0; renderWeek(); };
+
+function loadDay(ds){ return fakeData[ds] || {}; }
+function saveDay(ds, data){ fakeData[ds] = data; }
+
+function renderWeek() {
+  const mon = viewMonday();
+  const wn = getWeekNum(mon);
+  const end = addDays(mon,4);
+  const isPast = weekOffset < 0;
+  document.getElementById('week-label').textContent = `Uge ${wn}  ·  ${fmtShort(mon)} – ${fmtShort(end)}`;
+  document.getElementById('next-btn').style.display = isPast ? '' : 'none';
+  document.getElementById('today-btn').style.display = isPast ? '' : 'none';
+
+  const grid = document.getElementById('day-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<5;i++){
+    const d = addDays(mon,i);
+    const ds = isoDate(d);
+    const data = loadDay(ds);
+    const isToday = ds===isoDate(TODAY);
+    const tag = data.tag||null;
+    const isAbsence = tag && ['syg','feriefri','helligdag'].includes(tag);
+
+    const div = document.createElement('div');
+    div.className = 'day-card' + (isToday?' today':'') + (isAbsence?' absent':'');
+    const tagHTML = tag
+      ? `<span class="day-tag ${tag}">${TAG_LABELS[tag]||tag}</span>`
+      : `<span class="day-tag none">—</span>`;
+    const stampHTML = isToday && !isAbsence ? `
+      <div class="stamp-row">
+        <button class="btn-stamp start ${data.start?'set':''}" onclick="stampTime('${ds}','start')">${data.start||'▶ Start'}</button>
+        <button class="btn-stamp slut ${data.end?'set':''}" onclick="stampTime('${ds}','end')">${data.end||'⏹ Slut'}</button>
+      </div>` : '';
+    const tagsHTML = ['ferie','syg','p56','feriefri','afspadsering'].map(t =>
+      `<button class="tag-chip ${tag===t?'active-'+t:''}" onclick="setTag('${ds}','${t}')">${TAG_LABELS[t]}</button>`
+    ).join('');
+
+    div.innerHTML = `
+      <div class="day-top">
+        <div><div class="day-name">${DAYS[i]}</div><div class="day-date">${fmtShort(d)}</div></div>
+        ${tagHTML}
+      </div>
+      ${!isAbsence?`<div class="times-row">
+        <div class="time-field"><label>Mødt ind</label><input type="time" class="time-input" value="${data.start||''}" onchange="setTime('${ds}','start',this.value)"></div>
+        <div class="time-field"><label>Gået hjem</label><input type="time" class="time-input" value="${data.end||''}" onchange="setTime('${ds}','end',this.value)"></div>
+      </div>
+      ${data.start&&data.end?`<div class="tid-idag-row">${calcTidIdag(ds,data,viewMonday())}</div>`:''}`:''}
+      ${stampHTML}
+      <div class="tag-row">${tagsHTML}</div>
+      ${(tag==='ferie'||tag==='feriefri')?`<div class="halfday-row">
+        <span style="font-size:12px;color:var(--muted)">Varighed:</span>
+        <button class="halfday-btn ${!data.halfDay?'active':''}" onclick="setHalfDay('${ds}',false)">Hel dag</button>
+        <button class="halfday-btn ${data.halfDay?'active':''}" onclick="setHalfDay('${ds}',true)">Halv dag (0,5)</button>
+      </div>`:''}
+      ${(tag==='afspadsering')?`<div class="afspad-time-row">
+        <div><label class="afspad-label">Afspadsering fra</label><input type="time" class="time-input" value="${data.afFrom||''}" onchange="setAfTime('${ds}','afFrom',this.value)"></div>
+        <div><label class="afspad-label">Afspadsering til</label><input type="time" class="time-input" value="${data.afTo||''}" onchange="setAfTime('${ds}','afTo',this.value)"></div>
+      </div>`:''}
+      ${(tag==='p56')?`<div class="afspad-time-row">
+        <div><label class="afspad-label">§56 fra kl.</label><input type="time" class="time-input" value="${data.p56From||''}" onchange="setAfTime('${ds}','p56From',this.value)"></div>
+        <div><label class="afspad-label">§56 til kl.</label><input type="time" class="time-input" value="${data.p56To||''}" onchange="setAfTime('${ds}','p56To',this.value)"></div>
+      </div>`:''}
+      <div class="note-row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="text" class="note-input" placeholder="Note (valgfrit)…"
+          value="${(data.note||'').replace(/"/g,'&quot;')}"
+          onchange="setNote('${ds}',this.value)">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:0 10px">
+          <label style="font-size:11px;color:var(--muted);white-space:nowrap">Privat tid:</label>
+          <input type="number" min="0" max="480" step="5"
+            value="${data.privat||''}"
+            placeholder="0 min"
+            onchange="setPrivat('${ds}',this.value)"
+            style="flex:1;border:none;background:transparent;font-size:13px;font-family:monospace;outline:none;width:60px">
+          <span style="font-size:11px;color:var(--muted)">min</span>
+        </div>
+      </div>`;
+    grid.appendChild(div);
+  }
+}
+
+window.setTime = function(ds, field, val) {
+  const data = loadDay(ds);
+  data[field] = val;
+  saveDay(ds, data);
+};
+
+window.setNote = function(ds, val) {
+  const data = loadDay(ds);
+  data.note = val;
+  saveDay(ds, data);
+};
+
+window.setPrivat = function(ds, val) {
+  const data = loadDay(ds);
+  data.privat = parseInt(val)||0;
+  saveDay(ds, data);
+  renderWeek();
+};
+
+function calcTidIdag(ds, data, monday) {
+  if(!data.start||!data.end) return '';
+  if(data.tag && ['syg','ferie','feriefri','helligdag'].includes(data.tag)) return '';
+  const privat = parseInt(data.privat||0);
+  const raw = toMins(data.end)-toMins(data.start)-30-privat;
+  if(raw < 0) return '';
+  const d = new Date(ds+'T12:00:00');
+  const norm = d.getDay()===5?420:450;
+  const diff = raw-norm;
+  const tidH = Math.floor(raw/60), tidM = raw%60;
+  const diffH = Math.floor(Math.abs(diff)/60), diffM = Math.abs(diff)%60;
+  const diffSign = diff>=0?'+':'-';
+  const diffCls = diff>=0?'pos':'neg';
+
+  // Flex i alt: akkumuler AL flex op til og med i dag fra fakeData
+  let totalFlexMins = 0;
+  // Use scanDays for consistency
+  const allScanned = scanDays(new Date(2026,7,1), new Date(ds+'T23:59:59')); // only from data start
+  allScanned.forEach(function(r) {
+    const dayDs = r.ds;
+    const dayDate = r.d;
+    const dayData = r.data;
+    if(true) {
+    const dn = dayDate.getDay()===5?420:450;
+    if(!dayData.tag && dayData.start && dayData.end){
+      const dp = parseInt(dayData.privat||0);
+      const dr = toMins(dayData.end)-toMins(dayData.start)-30-dp;
+      if(dr >= 0) totalFlexMins += dr-dn;
+    } else if(dayData.tag==='afspadsering'){
+      totalFlexMins -= dn;
+    }
+    } // close if(true)
+  });
+
+  const tfSign = totalFlexMins>=0?'+':'-';
+  const tfH = Math.floor(Math.abs(totalFlexMins)/60);
+  const tfM = Math.abs(totalFlexMins)%60;
+  const tfCls = totalFlexMins>=0?'pos':'neg';
+
+  return '<span class="tid-label">Tid i dag:</span> ' +
+    '<span class="tid-val">'+tidH+'t '+String(tidM).padStart(2,'0')+'m</span> ' +
+    '<span class="tid-diff '+diffCls+'">('+diffSign+diffH+'t '+String(diffM).padStart(2,'0')+'m)</span>' +
+    '<span class="tid-sep"> &middot; </span>' +
+    '<span class="tid-label">Flex i alt:</span> ' +
+    '<span class="tid-diff '+tfCls+'">'+tfSign+tfH+'t '+String(tfM).padStart(2,'0')+'m</span>';
+  updateTopbarFlex();
+}
+
+// ── Oversigt saldi ────────────────────────────────────────────────────────────
+function loadSaldi(){try{return JSON.parse(localStorage.getItem('at_saldi'))||{};}catch{return{};}}
+function saveSaldi(d){localStorage.setItem('at_saldi',JSON.stringify(d));}
+function ferieKey(aar,f){return 'ferie_'+aar+'_'+f;}
+function ffKey(aar,f){return 'ff_'+aar+'_'+f;}
+function ferieAarStart(yr){return new Date(yr,8,1);}
+function ferieAarSlut(yr){return new Date(yr+1,7,31);}
+function ferieAfhSlut(yr){return new Date(yr+1,11,31);}
+function ffStart(yr){return new Date(yr,0,1);}
+function ffSlut(yr){return new Date(yr,11,31);}
+function curFerieAar(){const n=new Date();return n.getMonth()>=8?n.getFullYear():n.getFullYear()-1;}
+function curKalAar(){return new Date().getFullYear();}
+function scanDays(from,to){
+  const res=[],d=new Date(from),end=to||new Date();
+  d.setHours(0,0,0,0);end.setHours(23,59,59);
+  while(d<=end){
+    if(d.getDay()>=1&&d.getDay()<=5){
+      const ds=isoDate(d),data=loadDay(ds);
+      if(data.tag||data.start||data.end)res.push({ds,data,d:new Date(d)});
+    }
+    d.setDate(d.getDate()+1);
+  }
+  return res;
+}
+
+// ── CENTRAL flex beregning — bruges ALLE steder ───────────────────────────────
+function calcFlexTotal(endDate) {
+  var total = 0;
+  var days = scanDays(new Date(2026, 7, 1), endDate || new Date(2026, 8, 29));
+  days.forEach(function(r) {
+    var n = r.d.getDay()===5 ? 420 : 450;
+    if (!r.data.tag && r.data.start && r.data.end) {
+      var p = parseInt(r.data.privat||0);
+      var raw = toMins(r.data.end)-toMins(r.data.start)-30-p;
+      if (raw >= 0) total += raw - n;
+    } else if (r.data.tag === 'afspadsering') {
+      total -= r.data.afFrom && r.data.afTo ? toMins(r.data.afTo)-toMins(r.data.afFrom) : n;
+    }
+  });
+  return total;
+}
+
+function fmtFlex(mins) {
+  var sign = mins >= 0 ? '+' : '-';
+  return sign + Math.floor(Math.abs(mins)/60) + 't ' + pad(Math.abs(mins)%60) + 'm';
+}
+
+// ── Oversigt detail state ─────────────────────────────────────────────────────
+let curFerieDetail=curFerieAar(), curFfDetail=new Date().getFullYear();
+
+function saveFerieStart(){
+  const saldi=loadSaldi(),aar=curFerieDetail;
+  const val=parseFloat(document.getElementById('ferie-sept-input').value);
+  const dato=document.getElementById('ferie-dato-input').value;
+  if(!isNaN(val))saldi[ferieKey(aar,'sept')]=val;
+  if(dato)saldi[ferieKey(aar,'startdato')]=dato;
+  saveSaldi(saldi);renderDashboard();renderDetail('ferie');showToast('Gemt');
+}
+function saveFerieOverfort(){
+  const saldi=loadSaldi(),aar=curFerieDetail;
+  const val=parseFloat(document.getElementById('ferie-overfort-input').value);
+  if(!isNaN(val))saldi[ferieKey(aar,'overfort')]=val;
+  saveSaldi(saldi);renderDashboard();renderDetail('ferie');showToast('Gemt');
+}
+function saveFfTildelt(){
+  const saldi=loadSaldi(),aar=curFfDetail;
+  const val=parseFloat(document.getElementById('ff-tildelt-input').value);
+  if(!isNaN(val))saldi[ffKey(aar,'tildelt')]=val;
+  saveSaldi(saldi);renderDashboard();renderDetail('feriefri');showToast('Gemt');
+}
+function saveFfOverfort(){
+  const saldi=loadSaldi(),aar=curFfDetail;
+  const val=parseFloat(document.getElementById('ff-overfort-input').value);
+  if(!isNaN(val))saldi[ffKey(aar,'overfort')]=val;
+  saveSaldi(saldi);renderDashboard();renderDetail('feriefri');showToast('Gemt');
+}
+function saveAfStart(){
+  const saldi=loadSaldi();
+  const val=parseFloat(document.getElementById('af-start-input').value);
+  if(!isNaN(val))saldi['afspad_start']=val;
+  saveSaldi(saldi);renderDashboard();renderDetail('afspad');showToast('Gemt');
+}
+
+function openDetail(type){
+  document.querySelectorAll('.detail-panel').forEach(p=>p.style.display='none');
+  const panel=document.getElementById('detail-'+type);
+  if(!panel)return;panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  renderDetail(type);
+}
+function closeDetail(){document.querySelectorAll('.detail-panel').forEach(p=>p.style.display='none');}
+
+function tlR(dato,badgeCls,badgeLbl,beskr,change,saldoAfter){
+  const chSign=change>=0?'+':'-';
+  const chCls=change>=0?'color:#1a6b3a':'color:var(--red)';
+  const salCls=saldoAfter<0?'neg':'pos';
+  return '<div class="tl-row"><div class="tl-dato">'+dato+'</div>'+
+    '<div class="tl-badge '+badgeCls+'">'+badgeLbl+'</div>'+
+    '<div>'+beskr+'</div>'+
+    '<div class="tl-saldo '+salCls+'" style="'+chCls+'">'+
+    (chSign+Math.abs(change).toFixed(2))+' = '+saldoAfter.toFixed(2)+'</div></div>';
+}
+
+function renderDetail(type){
+  const saldi=loadSaldi(),now=new Date();
+  if(type==='ferie'){
+    const aar=curFerieDetail;
+    const fStart=ferieAarStart(aar),fSlut=ferieAfhSlut(aar);
+    const sept=parseFloat(saldi[ferieKey(aar,'sept')])||0;
+    const overfort=parseFloat(saldi[ferieKey(aar,'overfort')])||0;
+    const startdatoStr=saldi[ferieKey(aar,'startdato')]||isoDate(fStart);
+    const startdato=new Date(startdatoStr+'T12:00:00');
+    const months=(now.getFullYear()-startdato.getFullYear())*12+(now.getMonth()-startdato.getMonth());
+    const optjent=Math.max(0,months)*2.08;
+    const ferieD=scanDays(startdato,now).filter(r=>r.data.tag==='ferie');
+    const used=ferieD.reduce((s,r)=>s+(r.data.halfDay?0.5:1),0);
+    const tilbage=sept+overfort+optjent-used;
+    const el=document.getElementById('dt-ferie-tilbage');
+    if(el){el.textContent=tilbage.toFixed(2);el.className='detail-saldo-big'+(tilbage<2?' warn':'');}
+    const subEl=document.getElementById('dt-ferie-sub');
+    if(subEl)subEl.textContent='dage tilbage - afholdes senest '+ferieAfhSlut(aar).toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'});
+    const optEl=document.getElementById('dt-ferie-optaar');
+    if(optEl)optEl.textContent=aar+'/'+(aar+1)+' (1. sep '+aar+' - 31. aug '+(aar+1)+')';
+    const afhEl=document.getElementById('dt-ferie-afhper');
+    if(afhEl)afhEl.textContent='1. sep '+aar+' - 31. dec '+(aar+1)+' (16 mdr)';
+    const optjEl=document.getElementById('dt-ferie-optjent');
+    if(optjEl)optjEl.textContent=optjent.toFixed(2)+' dage siden '+startdatoStr;
+    const brugtEl=document.getElementById('dt-ferie-brugt');
+    if(brugtEl)brugtEl.textContent=used+' dag(e)';
+    const si=document.getElementById('ferie-sept-input');if(si)si.value=sept||'';
+    const di=document.getElementById('ferie-dato-input');if(di)di.value=startdatoStr;
+    const oi=document.getElementById('ferie-overfort-input');if(oi)oi.value=overfort||'';
+    const curAar=curFerieAar();
+    const btns=document.getElementById('ferie-aar-btns');
+    var bhtml2='';[curAar,curAar-1,curAar-2].forEach(function(y){bhtml2+='<button class="log-filter-btn'+(y===aar?' active':'')+'" onclick="setCurFerie('+y+')">'+(y)+'/'+(y+1)+'</button>';});if(btns)btns.innerHTML=bhtml2;
+
+
+    // Timeline
+    const entries=[];
+    entries.push({ds:isoDate(startdato),ord:0,fn:function(s){s+=sept+overfort;return[s,tlR(startdatoStr,'start','Start','Startbalance'+(overfort>0?' + '+overfort.toFixed(2)+' overfort':''),sept+overfort,s)];}});
+    let cur=new Date(startdato);cur.setDate(1);cur.setMonth(cur.getMonth()+1);
+    while(cur<=now){const ds=isoDate(cur),lbl=cur.toLocaleDateString('da-DK',{month:'long',year:'numeric'}),cc=new Date(cur);
+      entries.push({ds,ord:1,fn:(function(cc2,lbl2){return function(s){s+=2.08;return[s,tlR(cc2.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}),'optjening','+2,08','Optjening '+lbl2,2.08,s)];};})(cc,lbl)});
+      cur.setMonth(cur.getMonth()+1);}
+    const fdays=scanDays(startdato,now).filter(r=>r.data.tag==='ferie').sort((a,b)=>a.ds.localeCompare(b.ds));
+    const periods=[];let per=null;
+    fdays.forEach(r=>{if(!per){per={start:r.d,end:r.d,count:1,lastDs:r.ds};return;}
+      const prev=new Date(per.end);prev.setDate(prev.getDate()+1);
+      while(prev.getDay()===0||prev.getDay()===6)prev.setDate(prev.getDate()+1);
+      if(isoDate(prev)===r.ds){per.end=r.d;per.count++;per.lastDs=r.ds;}
+      else{periods.push(per);per={start:r.d,end:r.d,count:1,lastDs:r.ds};}});
+    if(per)periods.push(per);
+    periods.forEach(p=>{entries.push({ds:p.lastDs,ord:2,fn:(function(p2){return function(s){s-=p2.count;
+      const dato=p2.count>1?p2.start.toLocaleDateString('da-DK',{day:'numeric',month:'short'})+' - '+p2.end.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}):p2.start.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'});
+      return[s,tlR(dato,'afholdt-ferie','-'+p2.count+' dag'+(p2.count>1?'e':''),'Ferie afholdt',-p2.count,s)];};})(p)});});
+    entries.sort((a,b)=>a.ds.localeCompare(b.ds)||a.ord-b.ord);
+    let saldo=0;const rows=[];entries.forEach(e=>{const res=e.fn(saldo);saldo=res[0];rows.push(res[1]);});
+    const tlEl=document.getElementById('dt-ferie-tl');
+    if(tlEl)tlEl.innerHTML=rows.reverse().join('')||'<div class="detail-empty">Ingen registreringer</div>';
+  }
+  if(type==='feriefri'){
+    const aar=curFfDetail;
+    const pStart=ffStart(aar),pSlut=ffSlut(aar);
+    const tildelt=parseFloat(saldi[ffKey(aar,'tildelt')])||0;
+    const overfort=parseFloat(saldi[ffKey(aar,'overfort')])||0;
+    const used=scanDays(pStart,now<pSlut?now:pSlut).filter(r=>r.data.tag==='feriefri').length;
+    const tilbage=tildelt+overfort-used;
+    const el=document.getElementById('dt-ff-tilbage');
+    if(el){el.textContent=tilbage.toFixed(1);el.className='detail-saldo-big'+(tilbage<1?' warn':'');}
+    const subEl=document.getElementById('dt-ff-sub');
+    if(subEl)subEl.textContent='feriefridage tilbage - frist: 31. dec '+aar;
+    const perEl=document.getElementById('dt-ff-per');if(perEl)perEl.textContent='1. jan '+aar+' - 31. dec '+aar;
+    const nEl=document.getElementById('dt-ff-naeste');if(nEl)nEl.textContent='1. jan '+(aar+1)+' (5 nye feriefridage)';
+    const bEl=document.getElementById('dt-ff-brugt');if(bEl)bEl.textContent=used+' dag(e)';
+    const ti=document.getElementById('ff-tildelt-input');if(ti)ti.value=tildelt||'';
+    const oi=document.getElementById('ff-overfort-input');if(oi)oi.value=overfort||'';
+    const curAar=curKalAar();
+    const btns=document.getElementById('ff-aar-btns');
+    var bhtml3='';[curAar,curAar-1,curAar-2].forEach(function(y){bhtml3+='<button class="log-filter-btn'+(y===aar?' active':'')+'" onclick="setCurFf('+y+')">'+(y)+'</button>';});if(btns)btns.innerHTML=bhtml3;
+    const entries2=[];
+    entries2.push({ds:isoDate(pStart),fn:function(s){s+=tildelt+overfort;return[s,tlR(pStart.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}),overfort>0?'overfort':'tildelt','Tildelt'+(overfort>0?' + '+overfort.toFixed(1)+' overfort':''),'',tildelt+overfort,s)];}});
+    const ffdays=scanDays(pStart,now<pSlut?now:pSlut).filter(r=>r.data.tag==='feriefri');
+    ffdays.sort((a,b)=>a.ds.localeCompare(b.ds)).forEach(r=>{entries2.push({ds:r.ds,fn:(function(r2){return function(s){s-=1;return[s,tlR(r2.d.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short',year:'numeric'}),'afholdt-feriefri','-1','Feriefridag afholdt',-1,s)];};})(r)});});
+    entries2.sort((a,b)=>a.ds.localeCompare(b.ds));
+    let saldo2=0;const rows2=[];entries2.forEach(e=>{const res=e.fn(saldo2);saldo2=res[0];rows2.push(res[1]);});
+    const tlEl=document.getElementById('dt-ff-tl');
+    if(tlEl)tlEl.innerHTML=rows2.reverse().join('')||'<div class="detail-empty">Ingen registreringer</div>';
+  }
+  if(type==='afspad'){
+    const kalStart=new Date(now.getFullYear(),0,1);
+    const afStart=parseFloat(loadSaldi()['afspad_start'])||0;
+    let overMins=0;const afUsed=[];
+    scanDays(kalStart,now).forEach(r=>{
+      if(r.data.tag==='afspadsering')afUsed.push(r);
+      else if(!r.data.tag&&r.data.start&&r.data.end){
+        const raw=toMins(r.data.end)-toMins(r.data.start)-30,norm=normMins(r.d),diff=raw-norm;
+        if(diff>0)overMins+=diff;
+      }
+    });
+    const usedMins=afUsed.length*450;
+    const saldoMins=afStart*60+overMins-usedMins;
+    const sign=saldoMins>=0?'+':'-';
+    const timer=(Math.abs(saldoMins)/60).toFixed(2).replace('.',',');
+    const el=document.getElementById('dt-af-saldo');
+    if(el){el.textContent=sign+timer+' timer';el.className='detail-saldo-big'+(saldoMins<0?' warn':'');}
+    const optEl=document.getElementById('dt-af-optjent');if(optEl)optEl.textContent=Math.floor(overMins/60)+'t '+(overMins%60)+'m';
+    const bruEl=document.getElementById('dt-af-brugt');if(bruEl)bruEl.textContent=afUsed.length+' dag(e) a 7t 30m';
+    const si=document.getElementById('af-start-input');if(si)si.value=afStart||'';
+    const entries3=[];
+    if(afStart>0){const fS=ferieAarStart(curFerieAar());entries3.push({ds:isoDate(fS),ord:0,fn:function(s){s+=afStart*60;return[s,'<div class="tl-row"><div class="tl-dato">'+isoDate(fS)+'</div><div class="tl-badge start">Start</div><div>Startsaldo</div><div class="tl-saldo pos">+'+afStart+'t = '+(s/60).toFixed(2)+'t</div></div>'];}});}
+    scanDays(kalStart,now).forEach(r=>{
+      if(r.data.tag==='afspadsering'){entries3.push({ds:r.ds,ord:2,fn:(function(r2){return function(s){const n=normMins(r2.d);s-=n;return[s,'<div class="tl-row"><div class="tl-dato">'+r2.d.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'})+'</div><div class="tl-badge afholdt-afspad">-'+Math.floor(n/60)+'t '+n%60+'m</div><div>Afspadsering afholdt</div><div class="tl-saldo '+(s<0?'neg':'pos')+'">'+(s/60).toFixed(2)+'t</div></div>'];};})(r)});}
+      else if(!r.data.tag&&r.data.start&&r.data.end){const raw=toMins(r.data.end)-toMins(r.data.start)-30,norm=normMins(r.d),diff=raw-norm;
+        if(diff!==0){entries3.push({ds:r.ds,ord:1,fn:(function(r2,d2){return function(s){s+=d2;const dh=Math.floor(Math.abs(d2)/60),dm=Math.abs(d2)%60;return[s,'<div class="tl-row"><div class="tl-dato">'+r2.d.toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'})+'</div><div class="tl-badge '+(d2>0?'overtid':'afholdt-afspad')+'">'+(d2>0?'+':'-')+dh+'t '+dm+'m</div><div>'+(d2>0?'Overtid':'Undertid')+'</div><div class="tl-saldo '+(s<0?'neg':'pos')+'">'+(s/60).toFixed(2)+'t</div></div>'];};})(r,diff)});}}
+    });
+    entries3.sort((a,b)=>a.ds.localeCompare(b.ds)||a.ord-b.ord);
+    let s3=0;const r3=[];entries3.forEach(e=>{const res=e.fn(s3);s3=res[0];r3.push(res[1]);});
+    const tlEl=document.getElementById('dt-af-tl');
+    if(tlEl)tlEl.innerHTML=r3.reverse().join('')||'<div class="detail-empty">Ingen registreringer</div>';
+  }
+  if(type==='syg'){
+    const yr=now.getFullYear();
+    const aarEl=document.getElementById('dt-syg-aar');if(aarEl)aarEl.textContent=yr;
+    const days=scanDays(new Date(yr,0,1),now).filter(r=>r.data.tag==='syg');
+    const antalEl=document.getElementById('dt-syg-antal');if(antalEl)antalEl.textContent=days.length;
+    const listeEl=document.getElementById('dt-syg-liste');
+    if(listeEl)listeEl.innerHTML=days.length===0?'<div class="detail-empty">Ingen sygedage i '+yr+'</div>':
+      days.sort((a,b)=>a.ds.localeCompare(b.ds)).map(r=>'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f0;font-size:13px"><span>'+fmtDato(r.d)+'</span><span class="tl-badge afholdt-ferie">Syg</span></div>').join('');
+  }
+}
+
+// ── Dashboard summary cards ───────────────────────────────────────────────────
+function renderDashboard(){
+  const saldi=loadSaldi(),now=new Date(),aar=curFerieAar();
+  const fStart=ferieAarStart(aar);
+  const sept=parseFloat(saldi[ferieKey(aar,'sept')])||0;
+  const ovFerie=parseFloat(saldi[ferieKey(aar,'overfort')])||0;
+  const sdStr=saldi[ferieKey(aar,'startdato')]||isoDate(fStart);
+  const sd=new Date(sdStr+'T12:00:00');
+  const months=(now.getFullYear()-sd.getFullYear())*12+(now.getMonth()-sd.getMonth());
+  const optjent=Math.max(0,months)*2.08;
+  let ovFerieCalc=ovFerie;
+  if(!saldi[ferieKey(aar,'overfort')]){
+    const prevAar=aar-1;
+    const prevSept=parseFloat(saldi[ferieKey(prevAar,'sept')])||0;
+    const prevOv=parseFloat(saldi[ferieKey(prevAar,'overfort')])||0;
+    const prevSdStr=saldi[ferieKey(prevAar,'startdato')]||isoDate(ferieAarStart(prevAar));
+    const prevSd=new Date(prevSdStr+'T12:00:00');
+    const prevSlut=ferieAarStart(aar);
+    const prevMon=(prevSlut.getFullYear()-prevSd.getFullYear())*12+(prevSlut.getMonth()-prevSd.getMonth());
+    const prevOpt=Math.max(0,prevMon)*2.08;
+    const prevUsed=scanDays(prevSd,prevSlut).filter(r=>r.data.tag==='ferie').length;
+    const prevTilb=prevSept+prevOv+prevOpt-prevUsed;
+    ovFerieCalc=prevTilb>0?Math.round(prevTilb*100)/100:0;
+  }
+  const ferieUsed=scanDays(sd,now).filter(r=>r.data.tag==='ferie').length;
+  const ferieTilbage=(sept+ovFerieCalc+optjent-ferieUsed).toFixed(2);
+  const fe=document.getElementById('ov-ferie');
+  if(fe){fe.textContent=ferieTilbage;fe.className='ov-val'+(parseFloat(ferieTilbage)<2?' warn':'');}
+  const feFrist=document.getElementById('ov-ferie-frist');
+  if(feFrist)feFrist.textContent='Frist: 31. dec '+(aar+1);
+  const ffAar=curKalAar();
+  const ffTildelt=parseFloat(saldi[ffKey(ffAar,'tildelt')])||0;
+  const ffOv=parseFloat(saldi[ffKey(ffAar,'overfort')])||0;
+  const ffUsed=scanDays(ffStart(ffAar),now).filter(r=>r.data.tag==='feriefri').length;
+  const ffTilbage=(ffTildelt+ffOv-ffUsed).toFixed(1);
+  const ffe=document.getElementById('ov-feriefri');
+  if(ffe){ffe.textContent=ffTilbage;ffe.className='ov-val'+(parseFloat(ffTilbage)<1?' warn':'');}
+  const ffFrist=document.getElementById('ov-feriefri-frist');
+  if(ffFrist)ffFrist.textContent='Frist: 31. dec '+ffAar;
+  const kalStart=new Date(now.getFullYear(),0,1);
+  const afStart=parseFloat(saldi['afspad_start'])||0;
+  let overMins=0;
+  scanDays(kalStart,now).forEach(r=>{
+    if(!r.data.tag&&r.data.start&&r.data.end){
+      const raw=toMins(r.data.end)-toMins(r.data.start)-30,norm=normMins(r.d),diff=raw-norm;
+      if(diff>0)overMins+=diff;
+    }
+  });
+  const afUsed=scanDays(kalStart,now).filter(r=>r.data.tag==='afspadsering').length;
+  const afSaldo=afStart*60+overMins-afUsed*450;
+  const afSign=afSaldo>=0?'+':'-';
+  const afTimer=(Math.abs(afSaldo)/60).toFixed(2).replace('.',',');
+  const afe=document.getElementById('ov-afspad');
+  if(afe){afe.textContent=afSign+afTimer;afe.className='ov-val'+(afSaldo<0?' warn':'');}
+  const sygCount=scanDays(new Date(now.getFullYear(),0,1),now).filter(r=>r.data.tag==='syg').length;
+  const syge=document.getElementById('ov-syg');if(syge)syge.textContent=sygCount;
+  const subEl=document.getElementById('ov-subtitle');
+  if(subEl)subEl.textContent='Ferieaar '+aar+'/'+(aar+1)+' - Optjening: 1. sep '+aar+' - 31. aug '+(aar+1)+' - Afholdes senest 31. dec '+(aar+1);
+}
+
+// ── calcEmpStats ──────────────────────────────────────────────────────────────
+function calcEmpStats(data){
+  const now=new Date(),yr=now.getFullYear();
+  const ferieAar=now.getMonth()>=8?yr:yr-1;
+  const fStart=new Date(ferieAar,8,1);
+  const kalStart=new Date(yr,0,1);
+  let ferieDage=0,ffDage=0,sygDage=0,overMins=0;
+  Object.entries(data).forEach(([ds,d])=>{
+    const date=new Date(ds+'T12:00:00');
+    if(date.getDay()===0||date.getDay()===6)return;
+    if(d.tag==='ferie'&&date>=fStart)ferieDage++;
+    if(d.tag==='feriefri'&&date>=kalStart)ffDage++;
+    if(d.tag==='syg'&&date>=kalStart)sygDage++;
+    if(d.tag==='p56'&&date>=kalStart)sygDage++; // p56 tæller separat men vis samlet i emp
+    if(d.tag==='afspadsering'){const n=date.getDay()===5?420:450;overMins-=n;}
+    if(!d.tag&&d.start&&d.end){
+      const privat=parseInt(d.privat||0);
+      const raw=toMins(d.end)-toMins(d.start)-30-privat;
+      const norm=date.getDay()===5?420:450;
+      overMins+=raw-norm;
+    }
+  });
+  // Use 0 as default - admin should enter real balances
+  const ferieStart=0,ffStart2=0;
+  const monthsSince=(now.getFullYear()-fStart.getFullYear())*12+(now.getMonth()-fStart.getMonth());
+  const optjent=Math.max(0,monthsSince)*2.08;
+  return {
+    ferieTilbage:(ferieStart+optjent-ferieDage).toFixed(1),
+    ffTilbage:(ffStart2-ffDage).toFixed(1),
+    flexTimer:(overMins>=0?'+':'')+( overMins/60).toFixed(1)+'t',
+    flexNeg:overMins<0,
+    sygDage:sygDage
+  };
+}
+
+// ── renderAdm ─────────────────────────────────────────────────────────────────
+function renderAdm(){
+  const list=document.getElementById('emp-list');
+  const sel=document.getElementById('adm-emp');
+  if(!list||!sel)return;
+  list.innerHTML='';sel.innerHTML='';
+  Object.entries(DEMO_USERS).forEach(([email,prof])=>{
+    const data=empDataCache[email]||genFakeData(email);
+    const s=calcEmpStats(data);
+    const div=document.createElement('div');
+    div.className='emp-row';
+    div.innerHTML=`<div style="min-width:140px"><div class="emp-name">${prof.name}</div><div class="emp-email">${email}</div></div>
+      <div class="emp-stats-row">
+        <div class="emp-stat"><div class="emp-stat-val">${s.ferieTilbage}</div><div class="emp-stat-lab">Feriedage</div></div>
+        <div class="emp-stat"><div class="emp-stat-val">${s.ffTilbage}</div><div class="emp-stat-lab">Feriefridage</div></div>
+        <div class="emp-stat ${s.flexNeg?'neg':''}"><div class="emp-stat-val">${s.flexTimer}</div><div class="emp-stat-lab">Flex</div></div>
+        <div class="emp-stat"><div class="emp-stat-val">${s.sygDage}</div><div class="emp-stat-lab">Sygedage</div></div>
+      </div>
+      <button class="btn-sm adm-btn" onclick="showEmpModal('${email}')">Se detaljer →</button>`;
+    list.appendChild(div);
+    const opt=document.createElement('option');opt.value=email;opt.textContent=prof.name;sel.appendChild(opt);
+  });
+}
+
+// ── showEmpModal ──────────────────────────────────────────────────────────────
+function showEmpModal(email){
+  const prof=DEMO_USERS[email];
+  const data=empDataCache[email]||genFakeData(email);
+  document.getElementById('modal-name').textContent=prof?.name||email;
+  const s=calcEmpStats(data);
+  document.getElementById('modal-stats').innerHTML=`
+    <div class="adm-stat"><div class="adm-stat-val">${s.ferieTilbage}</div><div class="adm-stat-lab">Feriedage tilbage</div></div>
+    <div class="adm-stat"><div class="adm-stat-val">${s.ffTilbage}</div><div class="adm-stat-lab">Feriefridage tilbage</div></div>
+    <div class="adm-stat" style="${s.flexNeg?'color:var(--red)':''}"><div class="adm-stat-val" style="${s.flexNeg?'color:var(--red)':''}">${s.flexTimer}</div><div class="adm-stat-lab">Flex-timer</div></div>
+    <div class="adm-stat"><div class="adm-stat-val">${s.sygDage}</div><div class="adm-stat-lab">Sygedage i år</div></div>`;
+  const TAG_CLS={'ferie':'ferie','syg':'syg','feriefri':'ff','afspadsering':'afspad'};
+  const TAG_LBL={'ferie':'Ferie','syg':'Syg','feriefri':'Feriefridag','afspadsering':'Afspadsering'};
+  const recent=Object.entries(data).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,10).map(([ds,d])=>({d,date:new Date(ds+'T12:00:00')}));
+  document.getElementById('modal-list').innerHTML=recent.map(({d,date})=>`
+    <div class="list-item" style="display:grid;grid-template-columns:100px 90px 1fr;gap:8px;align-items:center">
+      <span style="font-size:12px">${date.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short',year:'2-digit'})}</span>
+      <span style="font-family:monospace;font-size:12px;color:var(--muted)">${d.start&&d.end?d.start+' - '+d.end:''}</span>
+      <span style="text-align:right">${d.tag?`<span class="badge ${TAG_CLS[d.tag]||''}">${TAG_LBL[d.tag]||d.tag}</span>`:'<span style="font-size:11px;color:var(--muted)">Arbejde</span>'}</span>
+    </div>`).join('');
+  document.getElementById('emp-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('emp-modal').classList.remove('open');}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(name){
+  ['uge','oversigt','download','adm'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.querySelector(`.tab-btn[onclick*="'${name}'"]`);
+  if(btn)btn.classList.add('active');
+  if(name==='adm')renderAdm();
+  if(name==='oversigt'){renderDashboard();}
+  if(name==='download'){monthOffset=0;renderMonthView();document.getElementById('dl-preview').innerHTML='';document.getElementById('dl-btn').style.display='none';}
+}
+
+// ── Download & månedsoversigt ─────────────────────────────────────────────────
+let monthOffset=0;
+function viewedMonthDate(){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+monthOffset);return d;}
+function changeMonth(dir){if(monthOffset+dir>0)return;monthOffset+=dir;renderMonthView();window.monthOffset=monthOffset;}
+
+function renderMonthView(){
+  const d=viewedMonthDate();
+  const yr=d.getFullYear(),mo=d.getMonth();
+  const now=new Date();
+  const isCurrentMonth=yr===now.getFullYear()&&mo===now.getMonth();
+  const label=d.toLocaleDateString('da-DK',{month:'long',year:'numeric'});
+  const labelCap=label.charAt(0).toUpperCase()+label.slice(1);
+  document.getElementById('month-label').textContent=labelCap;
+  const nextBtn=document.getElementById('month-next-btn');
+  if(nextBtn)nextBtn.style.display=isCurrentMonth?'none':'';
+  const fra=yr+'-'+String(mo+1).padStart(2,'0')+'-01';
+  const lastDay=new Date(yr,mo+1,0).getDate();
+  const til=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(lastDay).padStart(2,'0');
+  const fraEl=document.getElementById('dl-fra');if(fraEl)fraEl.value=fra;
+  const tilEl=document.getElementById('dl-til');if(tilEl)tilEl.value=til;
+  const src=fakeData;
+  let runningFlexMins=0;
+  // Pre-month flex: use scanDays to be consistent with rest of system
+  const preScan = scanDays(new Date(2026,7,1), new Date(fra+'T00:00:00')); // only from data start
+  preScan.forEach(function(r){
+    if(r.ds>=fra)return;
+    const n=r.d.getDay()===5?420:450;
+    if(!r.data.tag&&r.data.start&&r.data.end){
+      const p=parseInt(r.data.privat||0);
+      const raw=toMins(r.data.end)-toMins(r.data.start)-30-p;
+      runningFlexMins+=raw-n;
+    } else if(r.data.tag==='afspadsering')runningFlexMins-=n;
+  });
+  const rows=[];
+  const endDate = isCurrentMonth ? now : new Date(til+'T23:59:59');
+  const monthScan = scanDays(new Date(fra+'T00:00:00'), endDate);
+  monthScan.forEach(function(r){
+    const n=r.d.getDay()===5?420:450;
+    if(!r.data.tag&&r.data.start&&r.data.end){
+      const p=parseInt(r.data.privat||0);
+      const raw=toMins(r.data.end)-toMins(r.data.start)-30-p;
+      if(raw>=0)runningFlexMins+=raw-n;
+    } else if(r.data.tag==='afspadsering')runningFlexMins-=n;
+    rows.push({ds:r.ds,d:r.data,date:r.d,flex:runningFlexMins});
+  });
+  const preview=document.getElementById('month-preview');
+  const dlBtn=document.getElementById('month-dl-btn');
+  if(rows.length===0){
+    if(preview)preview.innerHTML='<div class="card" style="text-align:center;color:var(--muted);font-size:13px;padding:24px">Ingen registreringer i '+labelCap+'</div>';
+    if(dlBtn)dlBtn.style.display='none';return;
+  }
+  const counts={};rows.forEach(({d:d2})=>{const t=d2.tag||'arbejde';counts[t]=(counts[t]||0)+1;});
+  const TAG_L={ferie:'Ferie',feriefri:'Feriefridag',syg:'Syg',afspadsering:'Afspadsering',arbejde:'Arbejde'};
+  const TAG_C={ferie:'ferie',feriefri:'ff',syg:'syg',afspadsering:'afspad'};
+  const badges=['ferie','feriefri','syg','afspadsering','arbejde'].filter(t=>counts[t]).map(t=>
+    `<span class="badge ${TAG_C[t]||''}" style="font-size:12px;padding:4px 10px">${TAG_L[t]}: ${counts[t]}</span>`).join('');
+  const lastFlex=rows[rows.length-1]?.flex||0;
+  const lfSign=lastFlex>=0?'+':'-';
+  const lfH=Math.floor(Math.abs(lastFlex)/60),lfM=Math.abs(lastFlex)%60;
+  const lfCls=lastFlex>=0?'color:#1a6b3a':'color:var(--red)';
+  let html=`<div class="card"><div class="card-header"><span class="card-title">${labelCap} — ${rows.length} dage</span><span style="font-size:12px;${lfCls};font-weight:700;font-family:monospace">Akkum. flex: ${fmtFlex(akkumFlex)}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">${badges}</div>
+    <div class="dl-table-header"><span>Dato</span><span>Tider</span><span>Markering</span><span style="text-align:right">Flex i alt</span></div>`;
+  [...rows].reverse().forEach(({d:d2,date:date2,flex})=>{
+    const datoFmt=date2.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short'});
+    const tider=d2.start&&d2.end?`${d2.start} → ${d2.end}`:'';
+    const privat=parseInt(d2.privat||0);
+    const tagCls=TAG_C[d2.tag]||'';
+    const tagLbl=d2.tag?(TAG_L[d2.tag]||d2.tag):'';
+    const fSign=flex>=0?'+':'-';
+    const fH=Math.floor(Math.abs(flex)/60),fM=Math.abs(flex)%60;
+    const fCls=flex>=0?'color:#1a6b3a':'color:var(--red)';
+    const privatStr=privat>0?`<span style="font-size:10px;color:#856404;margin-left:4px">−${privat}m privat</span>`:'';
+    const showFlex=!d2.tag||d2.tag==='afspadsering';
+    html+=`<div class="dl-table-row"><span class="dl-dato">${datoFmt}</span><span class="dl-tider">${tider}${privatStr}</span><span>${d2.tag?`<span class="badge ${tagCls}">${tagLbl}</span>`:''}</span><span class="dl-flex" style="${fCls}">${fmtFlex(dayFlex)}</span></div>`;
+  });
+  html+='</div>';
+  if(preview)preview.innerHTML=html;
+  if(dlBtn)dlBtn.style.display='';
+}
+
+function doMonthDownload(){
+  const fra=document.getElementById('dl-fra')?.value||'';
+  const til=document.getElementById('dl-til')?.value||'';
+  genExcel(fakeData,currentProfile?.name||'Medarbejder','alt',fra,til);
+}
+
+// ── renderDlPreview ───────────────────────────────────────────────────────────
+function renderDlPreview(data,empName){
+  const src=data||fakeData;
+  const name=empName||currentProfile?.name||'';
+  const kat=document.getElementById('dl-kat').value;
+  const fra=document.getElementById('dl-fra').value;
+  const til=document.getElementById('dl-til').value;
+  const allRows=[];
+  Object.entries(src).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([ds,d])=>{
+    if(fra&&ds<fra)return;if(til&&ds>til)return;
+    if(kat!=='alt'&&d.tag!==kat)return;
+    allRows.push({ds,d,date:new Date(ds+'T12:00:00')});
+  });
+  const preview=document.getElementById('dl-preview');
+  const dlBtn=document.getElementById('dl-btn');
+  if(allRows.length===0){
+    if(preview)preview.innerHTML='<div class="card" style="text-align:center;color:var(--muted);font-size:13px;padding:24px">Ingen registreringer i den valgte periode</div>';
+    if(dlBtn)dlBtn.style.display='none';return;
+  }
+  const counts={};allRows.forEach(({d})=>{const t=d.tag||'arbejde';counts[t]=(counts[t]||0)+1;});
+  const TAG_L={ferie:'Ferie',feriefri:'Feriefridag',syg:'Syg',afspadsering:'Afspadsering',arbejde:'Arbejde',alt:'Alle'};
+  const TAG_C={ferie:'ferie',feriefri:'ff',syg:'syg',afspadsering:'afspad'};
+  const badges=['ferie','feriefri','syg','afspadsering','arbejde'].filter(t=>counts[t]).map(t=>
+    `<span class="badge ${TAG_C[t]||''}" style="font-size:12px;padding:4px 10px">${TAG_L[t]}: ${counts[t]}</span>`).join('');
+  let runningFlexMins=0;
+  const flexByDs={};
+  allRows.forEach(({ds,d,date})=>{
+    const n=date.getDay()===5?420:450;
+    if(!d.tag&&d.start&&d.end){const p=parseInt(d.privat||0);const raw=toMins(d.end)-toMins(d.start)-30-p;runningFlexMins+=raw-n;}
+    else if(d.tag==='afspadsering')runningFlexMins-=n;
+    flexByDs[ds]=runningFlexMins;
+  });
+  let html=`<div class="card"><div class="card-header"><span class="card-title">${TAG_L[kat]||kat} — ${allRows.length} dage</span><span style="font-size:12px;color:var(--muted)">${name}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">${badges}</div>
+    <div class="dl-table-header"><span>Dato</span><span>Tider</span><span>Markering</span><span style="text-align:right">Akkumuleret flex</span></div>`;
+  [...allRows].reverse().forEach(({ds,d,date})=>{
+    const datoFmt=date.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    const tider=d.start||d.end?`${d.start||'—'} → ${d.end||'—'}`:'';
+    const tagCls=TAG_C[d.tag]||'';const tagLbl=d.tag?(TAG_L[d.tag]||d.tag):'';
+    const flex=flexByDs[ds];const fSign=flex>=0?'+':'-';
+    const fH=Math.floor(Math.abs(flex)/60),fM=Math.abs(flex)%60;
+    const fCls=flex>=0?'color:#1a6b3a':'color:var(--red)';
+    html+=`<div class="dl-table-row"><span class="dl-dato">${datoFmt}</span><span class="dl-tider">${tider}</span><span>${d.tag?`<span class="badge ${tagCls}">${tagLbl}</span>`:''}</span><span class="dl-flex" style="${fCls}">${!d.tag||d.tag==='afspadsering'?`${fSign}${fH}t ${String(fM).padStart(2,'0')}m`:''}</span></div>`;
+  });
+  html+='</div>';
+  if(preview)preview.innerHTML=html;
+  if(dlBtn)dlBtn.style.display='';
+}
+
+function renderAdmPreview(){
+  const empEmail=document.getElementById('adm-emp').value;
+  if(!empEmail)return;
+  const empName=DEMO_USERS[empEmail]?.name||empEmail;
+  const empData=empDataCache[empEmail]||genFakeData(empEmail);
+  const kat=document.getElementById('adm-kat').value;
+  const fra=document.getElementById('adm-fra').value;
+  const til=document.getElementById('adm-til').value;
+  const rows=[];
+  Object.entries(empData).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([ds,d])=>{
+    if(fra&&ds<fra)return;if(til&&ds>til)return;
+    if(kat!=='alt'&&d.tag!==kat)return;
+    rows.push({ds,d,date:new Date(ds+'T12:00:00')});
+  });
+  const preview=document.getElementById('adm-dl-preview');
+  const dlBtn=document.getElementById('adm-dl-btn');
+  if(rows.length===0){if(preview)preview.innerHTML='<div class="card" style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Ingen data i valgt periode</div>';if(dlBtn)dlBtn.style.display='none';return;}
+  const TAG_L={ferie:'Ferie',feriefri:'Feriefridag',syg:'Syg',afspadsering:'Afspadsering',arbejde:'Arbejde'};
+  const TAG_C={ferie:'ferie',feriefri:'ff',syg:'syg',afspadsering:'afspad'};
+  const counts={};rows.forEach(({d})=>{const t=d.tag||'arbejde';counts[t]=(counts[t]||0)+1;});
+  const badges=Object.entries(counts).map(([t,c])=>`<span class="badge ${TAG_C[t]||''}" style="font-size:12px;padding:4px 10px">${TAG_L[t]||t}: ${c}</span>`).join('');
+  let html=`<div class="card"><div class="card-header"><span class="card-title">${TAG_L[kat]||kat} — ${rows.length} rækker</span><span style="font-size:12px;color:var(--muted)">${empName}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${badges}</div>`;
+  html+=rows.map(({d,date})=>{const datoFmt=date.toLocaleDateString('da-DK',{weekday:'short',day:'numeric',month:'short',year:'numeric'});const tider=d.start||d.end?`${d.start||'—'} → ${d.end||'—'}`:'';return`<div class="list-item"><span>${datoFmt}</span><span style="display:flex;align-items:center;gap:8px">${tider?`<span style="font-size:12px;color:var(--muted)">${tider}</span>`:''}<span class="badge ${TAG_C[d.tag]||''}">${TAG_L[d.tag]||d.tag||'Arbejde'}</span></span></div>`}).join('');
+  html+='</div>';
+  if(preview)preview.innerHTML=html;
+  if(dlBtn)dlBtn.style.display='';
+}
+
+function doDownload(){
+  const kat=document.getElementById('dl-kat').value;
+  const fra=document.getElementById('dl-fra').value;
+  const til=document.getElementById('dl-til').value;
+  genExcel(fakeData,currentProfile?.name||'Medarbejder',kat,fra,til);
+}
+
+function doAdmDownload(){
+  const empEmail=document.getElementById('adm-emp').value;
+  const kat=document.getElementById('adm-kat').value;
+  const fra=document.getElementById('adm-fra').value;
+  const til=document.getElementById('adm-til').value;
+  const empName=DEMO_USERS[empEmail]?.name||empEmail;
+  const empData=empDataCache[empEmail]||genFakeData(empEmail);
+  genExcel(empData,empName,kat,fra,til);
+}
+
+// ── Excel export ──────────────────────────────────────────────────────────────
+async function genExcel(data,name,kat,fra,til){
+  if(!window.ExcelJS){showToast('ExcelJS ikke klar - prøv igen');return;}
+  const TAG_L={ferie:'Ferie',feriefri:'Feriefridag',syg:'Syg',afspadsering:'Afspadsering'};
+  const wb=new ExcelJS.Workbook();const ws=wb.addWorksheet('Rapport');
+  ws.columns=[{width:14},{width:20},{width:12},{width:12},{width:16}];
+  ws.mergeCells('A1:E1');const t1=ws.getCell('A1');
+  t1.value='Tids.reg. af Kim Anker - '+name+' - '+(kat==='alt'?'Alle kategorier':TAG_L[kat]||kat);
+  t1.font={bold:true,size:13,color:{argb:'FFFFFFFF'}};
+  t1.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF1A3A5C'}};
+  t1.alignment={horizontal:'center'};ws.getRow(1).height=28;
+  const hr=ws.getRow(2);
+  ['Dato','Dag','Mødt ind','Gået hjem','Kategori'].forEach((h,i)=>{
+    const c=hr.getCell(i+1);c.value=h;c.font={bold:true,size:10,color:{argb:'FFFFFFFF'}};
+    c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF2A6090'}};c.alignment={horizontal:'center'};
+  });hr.height=20;
+  const DAGS=['Sø','Ma','Ti','On','To','Fr','Lø'];
+  let row=3,count=0;
+  Object.entries(data).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([ds,d])=>{
+    if(fra&&ds<fra)return;if(til&&ds>til)return;if(kat!=='alt'&&d.tag!==kat)return;
+    const date=new Date(ds+'T12:00:00');
+    const r=ws.getRow(row++);
+    [ds,DAGS[date.getDay()],d.start||'',d.end||'',d.tag?TAG_L[d.tag]||d.tag:'Arbejde'].forEach((v,i)=>{
+      const c=r.getCell(i+1);c.value=v;c.alignment={horizontal:'center'};
+      if(row%2===0)c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF2F5F9'}};
+    });count++;
+  });
+  if(count===0){ws.getRow(row).getCell(1).value='Ingen data i valgt periode';}
+  const buf=await wb.xlsx.writeBuffer();
+  const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='tidsreg_'+name.replace(' ','_')+'_'+kat+'.xlsx';a.click();
+  URL.revokeObjectURL(url);showToast('Excel downloadet ('+count+' rækker)');
+}
+
+// ── Expose all functions to window ───────────────────────────────────────────
+
+
+// ── Changelog (in-memory log) ────────────────────────────────────────────────
+var changeLog = [];
+
+function logChange(email, ds, field, oldVal, newVal) {
+  var now = new Date();
+  var ts = now.toLocaleDateString('da-DK') + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+  changeLog.push({ ts: ts, email: email, ds: ds, field: field, oldVal: oldVal, newVal: newVal });
+  if (changeLog.length > 500) changeLog.shift();
+}
+
+function renderChangelog(filterEmail) {
+  var el = document.getElementById('adm-changelog');
+  if (!el) return;
+  var entries = filterEmail ? changeLog.filter(function(e){ return e.email===filterEmail; }) : changeLog;
+  if (entries.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted)">Ingen ændringer registreret endnu</div>';
+    return;
+  }
+  var html = '<div style="max-height:400px;overflow-y:auto">';
+  var FIELD_LABELS = { start:'Mødt ind', end:'Gået hjem', tag:'Markering', note:'Note', privat:'Privat tid', halfDay:'Halvdag', afFrom:'Afsp. fra', afTo:'Afsp. til', p56From:'§56 fra', p56To:'§56 til' };
+  entries.slice().reverse().forEach(function(e) {
+    var d = new Date(e.ds+'T12:00:00');
+    var datoFmt = d.toLocaleDateString('da-DK', {weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    var fieldLbl = FIELD_LABELS[e.field] || e.field;
+    var oldStr = e.oldVal !== undefined && e.oldVal !== null && e.oldVal !== '' ? e.oldVal : '(tom)';
+    var newStr = e.newVal !== undefined && e.newVal !== null && e.newVal !== '' ? e.newVal : '(tom)';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #f5f5f0;font-size:12px">';
+    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px">';
+    html += '<span style="font-weight:700">' + datoFmt + '</span>';
+    html += '<span style="color:var(--muted)">' + e.ts + '</span>';
+    html += '</div>';
+    html += '<span style="color:var(--muted)">' + fieldLbl + ':</span> ';
+    html += '<span style="text-decoration:line-through;color:#bbb">' + oldStr + '</span> → ';
+    html += '<span style="color:var(--accent);font-weight:600">' + newStr + '</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── Extended setters with changelog ──────────────────────────────────────────
+function setHalfDay(ds, val) {
+  var data = loadDay(ds);
+  var old = data.halfDay ? 'Halv dag' : 'Hel dag';
+  var nw = val ? 'Halv dag' : 'Hel dag';
+  logChange(currentUser ? currentUser.email : 'ukendt', ds, 'halfDay', old, nw);
+  if (val) { data.halfDay = true; } else { delete data.halfDay; }
+  saveDay(ds, data);
+  renderWeek();
+}
+
+function setAfTime(ds, field, val) {
+  var data = loadDay(ds);
+  var old = data[field] || '';
+  logChange(currentUser ? currentUser.email : 'ukendt', ds, field, old, val);
+  data[field] = val;
+  saveDay(ds, data);
+}
+
+// ── Update topbar flex display ────────────────────────────────────────────────
+function updateTopbarFlex() {
+  var el = document.getElementById('topbar-flex');
+  if (!el) return;
+  var now = new Date(2026, 8, 29);
+  var kalStart = new Date(now.getFullYear(), 0, 1);
+  var totalFlex = calcFlexTotal(new Date(2026, 8, 29));
+  el.textContent = 'Flex: ' + fmtFlex(totalFlex);
+  el.className = 'topbar-flex' + (totalFlex < 0 ? ' neg' : '');
+  el.style.display = '';
+
+  // Also update uge flex bar
+  var ugeBar = document.getElementById('uge-flex-bar');
+  var ugeVal = document.getElementById('uge-flex-val');
+  var ugeWeek = document.getElementById('uge-flex-week');
+  if (ugeBar && ugeVal) {
+    ugeVal.textContent = fmtFlex(totalFlex);
+    ugeBar.style.background = totalFlex < 0 ? '#8b1a1a' : 'var(--accent)';
+
+    // Week flex
+    var mon = viewMonday ? viewMonday() : new Date();
+    var weekFlex = 0;
+    for (var i=0; i<5; i++) {
+      var wd = addDays(mon, i);
+      var wds = isoDate(wd);
+      var wdata = loadDay(wds);
+      var wn = wd.getDay()===5 ? 420 : 450;
+      if (!wdata.tag && wdata.start && wdata.end) {
+        var wp = parseInt(wdata.privat||0);
+        var wr = toMins(wdata.end)-toMins(wdata.start)-30-wp;
+        if (wr >= 0) weekFlex += wr-wn;
+      } else if (wdata.tag === 'afspadsering') {
+        weekFlex -= wdata.afFrom && wdata.afTo ? toMins(wdata.afTo)-toMins(wdata.afFrom) : wn;
+      }
+    }
+    if (ugeWeek) {
+      var ws = weekFlex >= 0 ? '+' : '-';
+      var wh = Math.floor(Math.abs(weekFlex)/60);
+      var wm = Math.abs(weekFlex)%60;
+      ugeWeek.textContent = ws + wh + 't ' + pad(wm) + 'm';
+      ugeWeek.style.opacity = weekFlex === 0 ? '.5' : '1';
+    }
+    ugeBar.style.display = 'flex';
+  }
+}
+
+// ── Wrap showEmpModal to also render changelog ────────────────────────────────
+var _origShowEmpModal = showEmpModal;
+function showEmpModal(email) {
+  _origShowEmpModal(email);
+  renderChangelog(email);
+}
+
+// ── Override setTag/setTime/setNote/setPrivat to log changes ─────────────────
+var _origSetTag = setTag;
+function setTag(ds, type) {
+  var data = loadDay(ds);
+  var old = data.tag || '(ingen)';
+  var nw = data.tag === type ? '(ingen)' : type;
+  logChange(currentUser ? currentUser.email : 'ukendt', ds, 'tag', old, nw);
+  _origSetTag(ds, type);
+}
+
+var _origSetTime = setTime;
+function setTime(ds, field, val) {
+  var data = loadDay(ds);
+  logChange(currentUser ? currentUser.email : 'ukendt', ds, field, data[field]||'', val);
+  _origSetTime(ds, field, val);
+}
+
+var _origSetNote = setNote;
+function setNote(ds, val) {
+  var data = loadDay(ds);
+  logChange(currentUser ? currentUser.email : 'ukendt', ds, 'note', data.note||'', val);
+  _origSetNote(ds, val);
+}
+
+// ── Ugeskema interaktion ──────────────────────────────────────────────────────
+function setTime(ds, field, val) {
+  var data = loadDay(ds);
+  data[field] = val;
+  saveDay(ds, data);
+  renderWeek();
+}
+
+function setNote(ds, val) {
+  var data = loadDay(ds);
+  data.note = val;
+  saveDay(ds, data);
+}
+
+function setPrivat(ds, val) {
+  var data = loadDay(ds);
+  data.privat = parseInt(val)||0;
+  saveDay(ds, data);
+  renderWeek();
+}
+
+function setTag(ds, type) {
+  var data = loadDay(ds);
+  var absenceTags = ['syg','feriefri','helligdag'];
+  if (data.tag === type) {
+    // Toggle off
+    delete data.tag;
+    delete data.wholeDay;
+  } else {
+    data.tag = type;
+    // Clear times for absence tags
+    if (absenceTags.includes(type)) {
+      delete data.start;
+      delete data.end;
+    }
+  }
+  saveDay(ds, data);
+  renderWeek();
+}
+
+function toggleWholeDay(ds, val) {
+  var data = loadDay(ds);
+  if (val) { data.wholeDay = true; delete data.start; delete data.end; }
+  else { delete data.wholeDay; }
+  saveDay(ds, data);
+  renderWeek();
+}
+
+function stampTime(ds, field) {
+  var data = loadDay(ds);
+  var now = new Date();
+  var t = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  if (field === 'end' && data.start && toMins(t) <= toMins(data.start)) {
+    showToast('Sluttid skal være efter starttid!', true);
+    return;
+  }
+  data[field] = t;
+  saveDay(ds, data);
+  renderWeek();
+  showToast(field === 'start' ? 'Start: ' + t : 'Slut: ' + t);
+}
+
+function changeWeek(dir) {
+  if (weekOffset + dir > 0) return;
+  weekOffset += dir;
+  renderWeek();
+}
+
+function goToday() {
+  weekOffset = 0;
+  renderWeek();
+}
+
+const _fns = {
+  doLogin,doForgot,doSignout,showForgot,showLogin,showChangePw,doChangePw,closeChangePw,
+  changeWeek,goToday,setTime,setNote,setPrivat,stampTime,setTag,toggleWholeDay,
+  switchTab,openDetail,closeDetail,renderDetail,
+  saveFerieStart,saveFerieOverfort,saveFfTildelt,saveFfOverfort,saveAfStart,
+  renderDlPreview,renderAdmPreview,doDownload,doAdmDownload,
+  showEmpModal,closeModal,showToast,changeMonth,renderMonthView,doMonthDownload,
+  setHalfDay,setAfTime,renderChangelog,updateTopbarFlex
+};
+Object.assign(window, _fns);
+window.curFerieDetail = curFerieDetail;
+window.curFfDetail = curFfDetail;
+window.monthOffset = monthOffset;
+
+// Keep curFerieDetail in sync
+function setCurFerie(y){ curFerieDetail = y; window.curFerieDetail = y; renderDetail('ferie'); }
+function setCurFf(y){ curFfDetail = y; window.curFfDetail = y; renderDetail('feriefri'); }
+window.setCurFerie = setCurFerie;
+window.setCurFf = setCurFf;
+
+document.getElementById('login-pw').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('login-email').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pw').focus();});
+</script>
+</body>
+</html>

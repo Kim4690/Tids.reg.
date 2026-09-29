@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Oplæg til Tidsregistreringssystem</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #ebf8ff;
+            --accent: #2b6cb0;
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 6px solid var(--primary);
+        }
+
+        h1 {
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            font-size: 26px;
+        }
+
+        .intro-text {
+            font-size: 16px;
+            color: var(--text-main);
+        }
+
+        .prototype-banner {
+            background-color: #feebc8;
+            border: 1px solid #fbd38d;
+            border-left: 6px solid #dd6b20;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .prototype-banner h3 {
+            margin-0 0 8px 0;
+            color: #9c4221;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn-link:hover {
+            background-color: var(--primary);
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 21px;
+            margin-top: 0;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+        }
+
+        .img-box {
+            margin: 25px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .img-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .img-caption {
+            background-color: #edf2f7;
+            padding: 10px 15px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            text-align: center;
+            border-top: 1px solid var(--border);
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Input og tanker til vores nye tidsregistrering</h1>
+        <div class="intro-text">
+            <p><strong>Hej Gustav,</strong></p>
+            <p>Det er et rigtig fint stykke arbejde, du har lavet! Det er skønt at se, at der langt om længe er en god tidsregistreringsløsning på vej til os. Tankerne bag systemet er super gode, og det flugter i høj grad med de principper og erfaringer, jeg selv har gjort mig og brugt i min egen tidsregistrering den seneste tid.</p>
+            <p>For at understøtte hverdagen bedst muligt for alle medarbejdere og skabe en så smidig workflow som muligt, har jeg samlet en række tanker, erfaringer og konkrete forslag til tilføjelser nedenfor.</p>
+        </div>
+
+        <div class="prototype-banner">
+            <h3>Visualisering & Eksempel på løsning</h3>
+            <p>Jeg har opbygget et visuelt oplæg til, hvordan brugerfladen, overblikket og administrationen kan struktureres helt konkret. Det giver et hurtigt billede af principperne:</p>
+            <!-- Erstat 'tidsreg_oplæg.html' med navnet på din html-prototype på GitHub -->
+            <a href="tidsreg_oplæg.html" target="_blank" class="btn-link">Åbn det interaktive oplæg her &rarr;</a>
+        </div>
+    </header>
+
+    <!-- Sektion 1 -->
+    <div class="section-card">
+        <h2>1. Daglig stempling og direkte ugevisning</h2>
+        <p>Tanken med den daglige registrering er, at det skal være så nemt og intuitivt som overhovedet muligt. Så snart man åbner systemet, bør det automatisk stille skarpt på "i dag". Her skal man med ét enkelt tryk på <strong>Start</strong> eller <strong>Slut</strong> kunne registrere sin arbejdstid – eller vælge fravær såsom ferie, sygdom eller afspadsering.</p>
+        <p>Ved at samle stemplingen direkte på ugeoversigten slipper vi for at have en separat side til stempling og en anden til oversigten. Én samlet ugevisning er nok, hvor man kan foretage det hele i samme skærmbillede. Samtidig vil det gøre oplevelsen væsentligt mere overskuelig, hvis hver visning dækker præcis én uge ad gangen, så man sidst på ugen slipper for at skulle scrolle ned over en lang liste.</p>
+
+        <div class="img-box">
+            <img src="ugeskema-forslag-1.png" alt="Forslag til stempling i ugeskema">
+            <div class="img-caption">Forslag: Direkte stempling på den aktuel dag inde i ugeskemaet.</div>
+        </div>
+
+        <div class="img-box">
+            <img src="ugeskema-forslag-2.png" alt="Samlet ugeskema">
+            <div class="img-caption">Forslag: Samlet ugebillede med status-opsummering i bunden.</div>
+        </div>
+    </div>
+
+    <!-- Sektion 2 -->
+    <div class="section-card">
+        <h2>2. Dashboard, saldi og overblik der giver tryghed</h2>
+        <p>Et godt dashboard handler i høj grad om at give den enkelte medarbejder fuld gennemskuelighed over sine egne forhold. Det skaber tryghed og sparer huset for en masse manuelle forespørgsler og administration.</p>
+        <p>På den nye forside/dashboard vil det være en kæmpe hjælp med en enkel oversigt over nøgletal: <strong>Feriedage tilbage</strong> (med udløbsfrist), <strong>Feriefridage tilbage</strong>, <strong>Sygedage i år</strong> samt <strong>Afspadsering/Flex-saldo</strong>. Flex-saldoen er allerede super fin, som den er i dag. Til gengæld kan vi med fordel fjerne tallet for "måned i alt i forhold til normtid" på toplinjen – det kan forvirre i forhold til flex-saldoen, som er det tal, der reelt har interesse.</p>
+        <p>Hvis man klikker på ét af felterne (f.eks. Feriedage), skal man nemt kunne se historikken for, hvordan tallet er opgjort. I henhold til gældende regler skal historikken kunne gemmes og vises for minimum 12 måneder (og op til 5 år i datagrundlaget), så man ikke kun kan se 60 dage tilbage.</p>
+
+        <div class="img-box">
+            <img src="dashboard-nuvaerende.png" alt="Nuværende dashboard">
+            <div class="img-caption">Det nuværende dashboard.</div>
+        </div>
+
+        <div class="img-box">
+            <img src="dashboard-nyt-forslag.png" alt="Forslag til nyt dashboard oversigt">
+            <div class="img-caption">Forslag: Dashboard med samlet overblik over ferie, feriefridage, afspadsering og sygedage med klikbar historik.</div>
+        </div>
+    </div>
+
+    <!-- Sektion 3 -->
+    <div class="section-card">
+        <h2>3. Håndtering af ferie, fravær og logik</h2>
+        <p>Når det kommer til ferie og fravær, oplever vi ofte nogle praktiske scenarier i hverdagen, som kræver en fleksibel opbygning:</p>
+        <p><strong>Fravær på forskud og efterregistrering:</strong> Hvis man skal holde 14 dages ferie frem i tiden, bør man kunne lægge det ind i én samlet handling i stedet for at skulle logge på hver dag eller taste hver enkelt dag manuelt bagefter. Det samme gælder ved hjemkomst fra fravær – her skal det være nemt at registrere perioden samlet.</p>
+        <p><strong>Skelnen og logik i fravær:</strong> Der bør skelnes tydeligt mellem "Feriefridag" og "Fri", da fri er arbejdsgiverbetalt, mens feriefridage trækkes fra den enkeltes optjente saldo (og eventuelle uafviklede feriefridage pr. 31/12 overføres til ny periode). Samtidig er det vigtigt, at systemet forhindrer dobbeltregistreringer (f.eks. at stå som både syg, på ferie og på arbejde samme dag). Hvis en dag er valgt som heldagsfravær, bør systemet automatisk låse for, at man kan stemple ind/ud den dag.</p>
+
+        <div class="img-box">
+            <img src="dobbeltregistrering.png" alt="Dobbeltregistrering i fravær">
+            <div class="img-caption">Eksempel fra testen hvor flere fraværskategorier optræder samtidig – dette kan med fordel spærres i logikken.</div>
+        </div>
+    </div>
+
+    <!-- Sektion 4 -->
+    <div class="section-card">
+        <h2>4. Rapportering, download og administration</h2>
+        <p>For den enkelte medarbejder giver det en god tryghed altid at kunne trække sin egen oversigt ud i Excel – enten for en hel måned ad gangen eller opdelt på bestemte kategorier som sygdom, ferie og afspadsering.</p>
+
+        <div class="img-box">
+            <img src="download-maaned.png" alt="Månedsoversigt og udtræk">
+            <div class="img-caption">Forslag: Månedsoversigt med mulighed for at hente eget skema.</div>
+        </div>
+
+        <p>På administrationsdelen kan ledelsen få et fuldstændigt og enkelt overblik over alle medarbejderes saldi samt mulighed for at trække tilsvarende rapporter ud. I den forbindelse vil jeg også foreslå, at vi genovervejer kravet om, at hver eneste lille ændring skal godkendes af admin.</p>
+        <p>Vi laver jo kun ændringer, når der er en reel grund til det, og et godkendelsesflow på alt kan hurtigt skabe en masse unødig administration i en travl hverdag – og indirekte sende et signal om mistillid. I stedet kunne admin have en samlet oversigt over foretagne ændringer og blot tage en snak, hvis der er noget uafklaret.</p>
+
+        <div class="img-box">
+            <img src="admin-oversigt.png" alt="Administration og overblik">
+            <div class="img-caption">Forslag: Administrationsmodul med samlet medarbejderoverblik og rapportudtræk.</div>
+        </div>
+    </div>
+
+    <!-- Sektion 5 -->
+    <div class="section-card">
+        <h2>5. Mindre praktiske og tekniske justeringer</h2>
+        <p>Til sidst er der et par mindre tekniske og praktiske ting, som vil gøre oplevelsen helt skarp:</p>
+        <p><strong>Login & stempling:</strong> Det bør være lige så simpelt at logge ind, uanset om man er på kontoret eller arbejder ude. Det vigtigste er tidspunktet – lokation kan evt. tilføjes som en note. Ligeledes er det vigtigt at sikre, at systemet fungerer optimalt på mobil (f.eks. i Safari på iPhone), og at en standard "Glemt adgangskode"-funktion er tilgængelig, da det er her, de fleste har brug for hjælp.</p>
+        <p><strong>Småkorrektioner:</strong> Spærretid på 3 minutter ved fejlstempling kan med fordel fjernes, stavefejlen på forsiden korrigeres ("Stempl" til "Stempel"), og popup-vinduer ved manuelle rettelser bør lukke automatisk efter indsendelse. Endelig bør reglerne for det automatiske frokostfradrag (30 min.) gøres helt konsekvente over hele linjen.</p>
+    </div>
+
+    <footer>
+        <p>Venlig hilsen<br><strong>Kim</strong></p>
+    </footer>
+
+</div>
+
+</body>
+</html>
